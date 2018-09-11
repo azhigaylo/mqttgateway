@@ -4,12 +4,9 @@
 #include <csignal>
 #include <cstdlib>
 #include <iostream>
-#include <thread>
 #include <atomic>
 
-#include "elogger/Logger.hpp"
-#include "elogger/OptionParser.hpp"
-
+#include "common/slog.h"
 #include "gateway/CapiMqttGateway.hpp"
 #include "inventory/CapiMqttGtwRevision.hpp"
 
@@ -19,7 +16,7 @@ volatile std::sig_atomic_t is_interrupt = 0;
 
 void signalHandler(int sig)
 {
-    ELOG_NAMED_SCOPE("CapiMqttMain");
+    ELOG_NAMED_SCOPE("MqttGateway");
 
     is_interrupt = sig;
 
@@ -28,14 +25,12 @@ void signalHandler(int sig)
     case SIGTERM:
     case SIGINT:
     {
-        ELOG_WRN << __func__ << ": " << "Application termination requested [Signal: " << strsignal(sig) << "].";
+        printDebug("MqttGateway/%s: Application termination requested [Signal:%i]", __FUNCTION__, sig);
         break;
     }
     default:
     {
-        std::stringstream ss;
-        ss << "Application failed. Fatal signal obtained: '" << strsignal(sig) << "'.";
-        ELOG_ERR << __func__ << ": " << ss.str();
+        printError("MqttGateway/%s: Fatal signal obtained: [Signal:%i], exit...", __FUNCTION__, sig);
         _exit(EXIT_FAILURE);
     }
     }
@@ -61,26 +56,25 @@ bool isQuit()
 
 int main(int argc, const char** argv)
 {
-    ELOG_NAMED_SCOPE("CapiMqttMain");
-
+    uint32_t debug_level;
+    uint32_t debug_sink;
     boost::filesystem::path config_file;
+    boost::filesystem::path gtw_table_file;
 
-    boost::program_options::options_description desc("CommonAPI-MQTT Gateway Component Options");
+    boost::program_options::options_description desc("HomeBrain core - MQTT Gateway Component Options");
     desc.add_options()
-        ("help,h", "produce help message")
-        ("version,v", "Print the version and exit.")
-        ("config,c",
-            boost::program_options::value<boost::filesystem::path>(&config_file)->default_value("capimqttgateway.json"),
-            std::string("Specify config path. By default: 'capimqttgateway.json'").c_str());
-
-    ELogger::Options logopts;
-    ELogger::addOptions(desc, logopts);
+        ("help,  h", "produce help message")
+        ("debug, d", boost::program_options::value<uint32_t>(&debug_level), "debug level 0-4(err/wr/info/dbg")
+        ("sink,  s", boost::program_options::value<uint32_t>(&debug_sink), "debug sink 0-1(console/dlt")
+        ("config,c",boost::program_options::value<boost::filesystem::path>(&config_file)->default_value("gtw_table.json"),
+                    std::string("Specify gatway table path. By default: 'gtw_table.json'").c_str());
+        ("table, t", boost::program_options::value<boost::filesystem::path>(&gtw_table_file)->default_value("gtw_config.json"),
+                    std::string("Specify config path. By default: 'gtw_config.json'").c_str())
 
     boost::program_options::variables_map vm;
     try
     {
-        boost::program_options::store(
-            boost::program_options::parse_command_line(argc, argv, desc), vm);
+        boost::program_options::store(boost::program_options::parse_command_line(argc, argv, desc), vm);
         boost::program_options::notify(vm);
     }
     catch (const boost::program_options::error& e)
@@ -95,19 +89,17 @@ int main(int argc, const char** argv)
         return EXIT_SUCCESS;
     }
 
-    if (vm.count("version"))
+    if (vm.count("debug"))
     {
-        std::cout << "CommonAPI-MQTT Gateway Component version info:\n" << CapiMqttGtw::getCapiMqttGtwVersion() << std::endl;
-        return EXIT_SUCCESS;
+        setDbgLevel(debug_level);
     }
 
-    ELogger::init(ELogger::Config(
-        ELogger::AppInfo("CMQT", "CommonAPI-MQTT Gateway"),
-        ELogger::ContextInfo("MAIN", "CommonAPI-MQTT Gateway main context"),
-        logopts));
+    if (vm.count("sink"))
+    {
+        setDbgSink(debug_sink);
+    }
 
-    ELOG_INF << __func__ << ": " << "CommonAPI-MQTT Gateway Component..";
-    ELOG_INF << "CommonAPI-MQTT Gateway revision:\n'" << CapiMqttGtw::getCapiMqttGtwRevision()  << "'.";
+    printDebug("MqttGateway/%s: HomeBrain core - MQTT Gateway Starting...", __FUNCTION__);
 
     try
     {
@@ -124,18 +116,18 @@ int main(int argc, const char** argv)
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
 
-        ELOG_INF << __func__ << ": " <<  "Main routine interrupted. Stopping...";
+        printDebug("MqttGateway/%s: HomeBrain core - MQTT Gateway Stopping...", __FUNCTION__);
 
         // close all activity
         capi_gateway->performStop();
 
-        ELOG_INF << __func__ << ": " << "Main routine stopped";
-        ELOG_INF << __func__ << ": " << "Everything cleaned up. Buy Buy...";
+        printDebug("MqttGateway/%s: HomeBrain core - MQTT Gateway Stopped...", __FUNCTION__);
     }
     catch (const std::exception& e)
     {
-        ELOG_ERR << __func__ << ": " << "Error description: " << e.what();
-        ELOG_ERR << __func__ << ": " << "Gateway is closing";
+        ELOG_ERR << __func__ << ": " << "Error description: " << ;
+        printDebug("MqttGateway/%s: Error description: %s", __FUNCTION__, e.what());
+        printDebug("MqttGateway/%s: Gateway is closings", __FUNCTION__);
         return 1;
     }
 

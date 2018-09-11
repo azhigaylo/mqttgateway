@@ -3,200 +3,252 @@
         "dest_path": "/tmp",
         "dump_prefix": "adas_"
     },
-    "DumperModules" : [
+    "DPointRouting" : [
        {
-           "channel": "camera0",
-           "file_name": "camera0",
-           "enable": false,
-           "priority": "mandatory",
-           "external" : false,
-           "ModuleOptions"   :
+           "dpoint_number" : 9,
+           "mqtt_topic"    : "home/status/plc/communication/OVEN0",
+           "mqtt_subscribe : false,
+           "value_mapping" :
            {
-               "source_device_info": {
-                   "id": "Magna_AP0130",
-                   "devname": "/dev/video0"
+               {
+                   "value"   : 0,
+                   "mapp_to" : "ok"
                },
-               "source_frame_options": {
-                   "width": 1280,
-                   "height": 720,
-                   "pixelformat": "RGBA"
+               {
+                   "value"   : 1,
+                   "mapp_to" : "error"
+               }
+           }
+       },
+       {
+           "dpoint_number" : 10,
+           "mqtt_topic"    : "home/status/plc/communication/OVEN1",
+           "mqtt_subscribe : false,
+           "value_mapping" :
+           {
+               {
+                   "value"   : 0,
+                   "mapp_to" : "ok"
                },
-               "source_stream_options": {
-                   "framerate": 30
+               {
+                   "value"   : 1,
+                   "mapp_to" : "error"
+               }
+           }
+       },
+       {
+           "dpoint_number" : 11,
+           "mqtt_topic"    : "home/status/plc/communication/OVEN2",
+           "mqtt_subscribe : false,
+           "value_mapping" :
+           {
+               {
+                   "value"   : 0,
+                   "mapp_to" : "ok"
                },
-               "output_options": {
-                   "bitrate": 10000000,
-                   "gop_size": 30,
-                   "idr_interval": 256
+               {
+                   "value"   : 1,
+                   "mapp_to" : "error"
+               }
+           }
+       },
+       {
+           "dpoint_number" : 12,
+           "mqtt_topic"    : "home/status/plc/communication/OVEN3",
+           "mqtt_subscribe : false,
+           "value_mapping" :
+           {
+               {
+                   "value"   : 0,
+                   "mapp_to" : "ok"
+               },
+               {
+                   "value"   : 1,
+                   "mapp_to" : "error"
                }
            }
         },
         {
-            "channel": "camera1",
-            "file_name": "camera1",
-            "enable": false,
-            "priority": "mandatory",
-            "external" : false,
-            "ModuleOptions"   :
-            {
-                "source_device_info": {
-                    "id": "Leopard_OV10635",
-                    "devname": "/dev/video1"
-                },
-                "source_frame_options": {
-                    "width": 1280,
-                    "height": 800,
-                    "pixelformat": "YUV422"
-                },
-                "source_stream_options": {
-                    "framerate": 30
-                },
-                "output_options": {
-                    "bitrate": 10000000,
-                    "gop_size": 30,
-                    "idr_interval": 256
-                }
-            }
+           "dpoint_number" : 15,
+           "mqtt_topic"    : "home/status/plc/communication/st_hallway",
+           "mqtt_subscribe : false,
+           "value_mapping" :
+           {
+               {
+                   "value"   : 0,
+                   "mapp_to" : "ok"
+               },
+               {
+                   "value"   : 1,
+                   "mapp_to" : "error"
+               }
+           }
         },
         {
-            "channel": "can0",
-            "file_name": "can0",
-            "enable": false,
-            "priority": "optional",
-            "external" : false,
-            "ModuleOptions"   :
-            {
-                "interface": "can0"
-            }
+           "dpoint_number" : 16,
+           "mqtt_topic"    : "home/status/plc/communication/st_hall",
+           "mqtt_subscribe : false,
+           "value_mapping" :
+           {
+               {
+                   "value"   : 0,
+                   "mapp_to" : "ok"
+               },
+               {
+                   "value"   : 1,
+                   "mapp_to" : "error"
+               }
+           }
         },
         {
-            "channel": "can1",
-            "file_name": "can1",
-            "enable": false,
-            "priority": "optional",
-            "external" : false,
-            "ModuleOptions"   :
-            {
-                "interface": "can1"
-            }
+           "dpoint_number" : 17,
+           "mqtt_topic"    : "home/status/plc/communication/st_room1",
+           "mqtt_subscribe : false,
+           "value_mapping" :
+           {
+               {
+                   "value"   : 0,
+                   "mapp_to" : "ok"
+               },
+               {
+                   "value"   : 1,
+                   "mapp_to" : "error"
+               }
+           }
         },
         {
-            "channel": "imu",
-            "file_name": "imu",
-            "enable": false,
-            "priority": "optional",
-            "external" : false,
-            "ModuleOptions"   :
-            {
-                "devname": "/dev/ttyTHS3",
-                "baudrate": 115200
-            }
+           "dpoint_number" : 18,
+           "mqtt_topic"    : "home/status/plc/communication/st_room2",
+           "mqtt_subscribe : false,
+           "value_mapping" :
+           {
+               {
+                   "value"   : 0,
+                   "mapp_to" : "ok"
+               },
+               {
+                   "value"   : 1,
+                   "mapp_to" : "error"
+               }
+           }
         },
         {
-            "channel": "gps",
-            "file_name": "gps",
-            "enable": false,
-            "priority": "mandatory",
-            "external" : false,
-            "ModuleOptions"   :
-            {
-                "devname": "/dev/ttyTHS0",
-                "baudrate": 230400,
-                "pps": true,
-                "pps_dev": "/dev/pps0"
-            }
+           "dpoint_number" : 19,
+           "mqtt_topic"    : "home/status/plc/communication/st_room3",
+           "mqtt_subscribe : false,
+           "value_mapping" :
+           {
+               {
+                   "value"   : 0,
+                   "mapp_to" : "ok"
+               },
+               {
+                   "value"   : 1,
+                   "mapp_to" : "error"
+               }
+           }
         },
         {
-            "channel": "mpu6050_complex",
-            "file_name": "imu_complex",
-            "enable": true,
-            "priority": "optional",
-            "external" : false,
-            "ModuleOptions"   :
-            {
-                "sample_rate" : 100,
-                "imu_devname" : "iio:device4"
-            }
+           "dpoint_number" : 95,
+           "mqtt_topic"    : "home/control/alarm/hallway",
+           "mqtt_subscribe : true,
+           "value_mapping" :
+           {
+               {
+                   "value"   : 0,
+                   "mapp_to" : "on"
+               },
+               {
+                   "value"   : 1,
+                   "mapp_to" : "off"
+               }
+           }
         },
         {
-            "channel": "bmp280",
-            "file_name": "pressure",
-            "enable": false,
-            "priority": "optional",
-            "external" : false,
-            "ModuleOptions"   :
-            {
-                "sample_rate" : 50000,
-                "baro_devname" : "iio:device7"
-            }
+           "dpoint_number" : 96,
+           "mqtt_topic"    : "home/control/alarm/hall",
+           "mqtt_subscribe : true,
+           "value_mapping" :
+           {
+               {
+                   "value"   : 0,
+                   "mapp_to" : "on"
+               },
+               {
+                   "value"   : 1,
+                   "mapp_to" : "off"
+               }
+           }
         },
         {
-            "channel": "m8",
-            "file_name": "m8",
-            "enable": false,
-            "priority": "optional",
-            "external" : false,
-            "ModuleOptions"   :
-            {
-                "m8_ip": "192.168.1.1",
-                "m8_port": 4141
-            }
+           "dpoint_number" : 97,
+           "mqtt_topic"    : "home/control/alarm/room1",
+           "mqtt_subscribe : true,
+           "value_mapping" :
+           {
+               {
+                   "value"   : 0,
+                   "mapp_to" : "on"
+               },
+               {
+                   "value"   : 1,
+                   "mapp_to" : "off"
+               }
+           }
         },
         {
-            "channel": "udp",
-            "file_name": "udp",
-            "enable": false,
-            "priority": "optional",
-            "external" : false,
-            "ModuleOptions"   :
-            {
-                "port": 9080
-            }
+           "dpoint_number" : 98,
+           "mqtt_topic"    : "home/control/alarm/room2",
+           "mqtt_subscribe : true,
+           "value_mapping" :
+           {
+               {
+                   "value"   : 0,
+                   "mapp_to" : "on"
+               },
+               {
+                   "value"   : 1,
+                   "mapp_to" : "off"
+               }
+           }
         },
         {
-            "channel": "gps_sensor_source",
-            "file_name": "gps",
-            "enable": false,
-            "priority": "mandatory",
-            "external" : true,
-            "ModuleOptions"   :
-            {
-
-            }
+           "dpoint_number" : 99,
+           "mqtt_topic"    : "home/control/alarm/room3",
+           "mqtt_subscribe : true,
+           "value_mapping" :
+           {
+               {
+                   "value"   : 0,
+                   "mapp_to" : "on"
+               },
+               {
+                   "value"   : 1,
+                   "mapp_to" : "off"
+               }
+           }
+        }
+    ],
+    "APointRouting" : [
+        {
+           "apoint_number" : 10,
+           "mqtt_topic"    : "home/status/temterature/hallway",
+           "mqtt_subscribe : false,
         },
         {
-            "channel": "mpu_sensor_source",
-            "file_name": "imu_complex",
-            "enable": false,
-            "priority": "mandatory",
-            "external" : true,
-            "ModuleOptions"   :
-            {
-
-            }
+           "apoint_number" : 11,
+           "mqtt_topic"    : "home/status/lighting/hallway",
+           "mqtt_subscribe : false,
         },
         {
-            "channel": "camera0_video_source",
-            "file_name": "camera0",
-            "enable": true,
-            "priority": "mandatory",
-            "external" : true,
-            "ModuleOptions" :
-            {
-                "source_frame_options": {
-                    "width": 1280,
-                    "height": 800,
-                    "pixelformat": "YUV422"
-                },
-                "source_stream_options": {
-                    "framerate": 30
-                },
-                "output_options": {
-                    "bitrate": 10000000,
-                    "gop_size": 30,
-                    "idr_interval": 256
-                }
-            }
+           "apoint_number" : 12,
+           "mqtt_topic"    : "home/status/gas/hallway",
+           "mqtt_subscribe : false,
+        },
+        {
+           "apoint_number" : 14,
+           "mqtt_topic"    : "home/engineering/settings/motion_sensotivity/hallway",
+           "mqtt_subscribe : true,
         }
     ]
 }
