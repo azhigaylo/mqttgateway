@@ -10,6 +10,7 @@ else()
     message(FATAL_ERROR "Boost NOT FOUND")
 endif()
 
+add_subdirectory(common)
 add_subdirectory(parsers)
 add_subdirectory(dataclient)
 add_subdirectory(mqttclient)

@@ -1,20 +1,11 @@
 cmake_minimum_required(VERSION 3.1)
 
-project(dataclient LANGUAGES CXX)
+project(common LANGUAGES CXX)
 
-message("mqttclient...")
-
-find_package(Boost REQUIRED COMPONENTS thread system)
-
-if(Boost_FOUND)
-    message("Boost_FOUND..")
-else()
-    message(FATAL_ERROR "Boost NOT FOUND")
-endif()
+message("common...")
 
 add_library(${PROJECT_NAME} STATIC
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/DataClientInterface.cpp
-    ${moc_dataclient_src}
+    ${CMAKE_CURRENT_SOURCE_DIR}/slog.cpp
     )
 
 target_include_directories(${PROJECT_NAME}
@@ -22,7 +13,4 @@ target_include_directories(${PROJECT_NAME}
     )
 
 target_link_libraries(${PROJECT_NAME}
-    Boost::boost
-    Boost::thread
-    Boost::system
     )

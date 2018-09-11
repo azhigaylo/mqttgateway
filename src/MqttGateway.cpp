@@ -1,23 +1,24 @@
-#include <boost/program_options.hpp>
-#include <boost/filesystem.hpp>
-#include <chrono>
+#include <atomic>
+#include <thread>
 #include <csignal>
+#include <cstdint>
 #include <cstdlib>
 #include <iostream>
-#include <atomic>
+
+#include <boost/filesystem.hpp>
+#include <boost/program_options.hpp>
 
 #include "common/slog.h"
-#include "gateway/CapiMqttGateway.hpp"
-#include "inventory/CapiMqttGtwRevision.hpp"
+#include "common/ptypes.h"
+
+#include "MqttGatewayImpl.hpp"
 
 namespace
 {
-volatile std::sig_atomic_t is_interrupt = 0;
+volatile std::sig_atomic_t is_interrupt;
 
 void signalHandler(int sig)
 {
-    ELOG_NAMED_SCOPE("MqttGateway");
-
     is_interrupt = sig;
 
     switch (sig)
@@ -67,9 +68,9 @@ int main(int argc, const char** argv)
         ("debug, d", boost::program_options::value<uint32_t>(&debug_level), "debug level 0-4(err/wr/info/dbg")
         ("sink,  s", boost::program_options::value<uint32_t>(&debug_sink), "debug sink 0-1(console/dlt")
         ("config,c",boost::program_options::value<boost::filesystem::path>(&config_file)->default_value("gtw_table.json"),
-                    std::string("Specify gatway table path. By default: 'gtw_table.json'").c_str());
+                    std::string("Specify gatway table path. By default: 'gtw_table.json'").c_str())
         ("table, t", boost::program_options::value<boost::filesystem::path>(&gtw_table_file)->default_value("gtw_config.json"),
-                    std::string("Specify config path. By default: 'gtw_config.json'").c_str())
+                    std::string("Specify config path. By default: 'gtw_config.json'").c_str());
 
     boost::program_options::variables_map vm;
     try
@@ -103,10 +104,10 @@ int main(int argc, const char** argv)
 
     try
     {
-        std::unique_ptr<CapiMqtt::CCapiMqttGateway> capi_gateway;
-        capi_gateway.reset(new CapiMqtt::CCapiMqttGateway(std::make_shared<CapiMqtt::CConfigParser>(config_file.string())));
+        std::unique_ptr<MqttGateway::MqttGatewayImpl> core_gateway;
+        core_gateway.reset(new MqttGateway::CCapiMqttGateway(std::make_shared<Parsers::CConfigParser>(config_file.string())));
 
-        capi_gateway->performStart();
+        core_gateway->performStart();
 
         // Setup signal handlers
         configureSignalHandlers();
@@ -119,13 +120,12 @@ int main(int argc, const char** argv)
         printDebug("MqttGateway/%s: HomeBrain core - MQTT Gateway Stopping...", __FUNCTION__);
 
         // close all activity
-        capi_gateway->performStop();
+        core_gateway->performStop();
 
         printDebug("MqttGateway/%s: HomeBrain core - MQTT Gateway Stopped...", __FUNCTION__);
     }
     catch (const std::exception& e)
     {
-        ELOG_ERR << __func__ << ": " << "Error description: " << ;
         printDebug("MqttGateway/%s: Error description: %s", __FUNCTION__, e.what());
         printDebug("MqttGateway/%s: Gateway is closings", __FUNCTION__);
         return 1;
