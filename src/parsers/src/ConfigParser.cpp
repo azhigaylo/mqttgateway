@@ -8,17 +8,21 @@
 #include <boost/property_tree/json_parser.hpp>
 
 #include "common/slog.h"
-#include "common/ptypes.h"
 
 namespace Parsers
 {
-const std::string CConfigParser::c_capimqtt_opt           = "CapiMqttOptions";
-const std::string CConfigParser::c_capimqtt_id            = "capi_id";
+
+namespace Cfg
+{
+	const std::string c_mqtt_opt             = "MqttClientConfig";
+	const std::string c_mqtt_broker_ip       = "broker_ip";
+	const std::string c_mqtt_broker_port     = "broker_port";
+	const std::string c_mqtt_broker_username = "username";
+	const std::string c_mqtt_broker_password = "password";
+}
 
 CConfigParser::CConfigParser(const std::string& config_path)
 {
-    ELOG_NAMED_SCOPE("CConfigParser");
-
     if (!boost::filesystem::exists(config_path))
     {
         throw std::runtime_error(std::string("configuration unavailable: file is not exist: ") + config_path );
@@ -30,10 +34,12 @@ CConfigParser::CConfigParser(const std::string& config_path)
             namespace pt = boost::property_tree;
             pt::ptree config_ptree;
             pt::read_json(config_path, config_ptree);
-            pt::ptree &opt_node = config_ptree.get_child(c_capimqtt_opt);
+            pt::ptree &opt_node = config_ptree.get_child(Cfg::c_mqtt_opt);
 
-            m_capimqtt_id = opt_node.get<std::string>(c_capimqtt_id);
-
+            m_mqtt_broker_ip        = opt_node.get<std::string>(Cfg::c_mqtt_broker_ip);
+            m_mqtt_broker_port      = opt_node.get<unsigned>(Cfg::c_mqtt_broker_port);
+            m_mqtt_broker_username  = opt_node.get<std::string>(Cfg::c_mqtt_broker_username);
+            m_mqtt_broker_password  = opt_node.get<std::string>(Cfg::c_mqtt_broker_password);
         }
         catch (const std::exception& e)
         {
@@ -46,8 +52,6 @@ CConfigParser::CConfigParser(const std::string& config_path)
 
 CConfigParser::~CConfigParser()
 {
-    ELOG_NAMED_SCOPE("CConfigParser");
-
     printDebug("CConfigParser/%s: removed...", __FUNCTION__);
 }
 

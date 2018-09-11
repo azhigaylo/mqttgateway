@@ -6,6 +6,8 @@
 #include <boost/thread.hpp>
 #include <boost/thread/scoped_thread.hpp>
 
+#include "common/slog.h"
+
 namespace MqttGateway
 {
 
@@ -13,12 +15,12 @@ CMqttGatewayImpl::CMqttGatewayImpl(const std::shared_ptr<Parsers::CConfigParser>
     : m_config(config)
 {
 
-    ELOG_INF << __func__ << ": " << " started...";
+    printDebug("CMqttGatewayImpl/%s: created...", __FUNCTION__);
 }
 
 CMqttGatewayImpl::~CMqttGatewayImpl()
 {
-    ELOG_INF << __func__ << ": " << " was deleted";
+    printDebug("CMqttGatewayImpl/%s: was deleted", __FUNCTION__);
 }
 
 void CMqttGatewayImpl::performStart()
@@ -39,23 +41,17 @@ void CMqttGatewayImpl::performStart()
         throw;
     }
 
-    ELOG_INF << __func__ << ": " << "started";
+    printDebug("CMqttGatewayImpl/%s: started...", __FUNCTION__);
 }
 
 void CMqttGatewayImpl::performStop()
 {
-    ELOG_INF << __func__ << ": " << "->";
+    printDebug("CMqttGatewayImpl/%s: ->", __FUNCTION__);
 
-    if (m_pos_listener)
-    {
-        m_pos_listener->stopListening();
-        m_pos_listener.reset();
+//    m_mqtt_handler->stopListening();
+//    m_mqtt_handler.reset();
 
-        m_mqtt_handler->stopListening();
-        m_mqtt_handler.reset();
-    }
-
-    ELOG_INF << __func__ << ": " << "<-";
+    printDebug("CMqttGatewayImpl/%s: <-", __FUNCTION__);
 }
 
 

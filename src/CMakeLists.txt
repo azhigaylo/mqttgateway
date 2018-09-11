@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.4.0)
 
-find_package(Boost REQUIRED COMPONENTS thread system)
+find_package(Boost REQUIRED COMPONENTS thread system program_options)
 
 if(Boost_FOUND)
     message("Boost_FOUND !!!!")
@@ -12,15 +12,19 @@ endif()
 
 add_subdirectory(common)
 add_subdirectory(parsers)
-add_subdirectory(dataclient)
-add_subdirectory(mqttclient)
+#add_subdirectory(dataclient)
+#add_subdirectory(mqttclient)
 
 add_executable(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/MqttGateway.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/MqttGatewayImpl.cpp
     )
 
 target_link_libraries(${PROJECT_NAME}
     Boost::boost
+    Boost::program_options
     Boost::thread
     Boost::system
+    common
+    parsers
     )

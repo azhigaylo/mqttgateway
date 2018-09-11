@@ -8,7 +8,7 @@
 #include <boost/optional.hpp>
 #include <boost/thread/scoped_thread.hpp>
 
-#include "MqttDataHandler.hpp"
+//#include "MqttDataHandler.hpp"
 #include "parsers/ConfigParser.hpp"
 
 namespace MqttGateway

@@ -9,7 +9,6 @@
 #include <boost/program_options.hpp>
 
 #include "common/slog.h"
-#include "common/ptypes.h"
 
 #include "MqttGatewayImpl.hpp"
 
@@ -62,14 +61,14 @@ int main(int argc, const char** argv)
     boost::filesystem::path config_file;
     boost::filesystem::path gtw_table_file;
 
-    boost::program_options::options_description desc("HomeBrain core - MQTT Gateway Component Options");
+    boost::program_options::options_description desc("HomeBrain core <-> MQTT Gateway Component Options");
     desc.add_options()
-        ("help,  h", "produce help message")
-        ("debug, d", boost::program_options::value<uint32_t>(&debug_level), "debug level 0-4(err/wr/info/dbg")
-        ("sink,  s", boost::program_options::value<uint32_t>(&debug_sink), "debug sink 0-1(console/dlt")
+        ("help,h", "produce help message")
+        ("debug,d", boost::program_options::value<uint32_t>(&debug_level), "debug level 0-4(err/wr/info/dbg")
+        ("sink,s",  boost::program_options::value<uint32_t>(&debug_sink), "debug sink 0-1(console/dlt")
         ("config,c",boost::program_options::value<boost::filesystem::path>(&config_file)->default_value("gtw_table.json"),
                     std::string("Specify gatway table path. By default: 'gtw_table.json'").c_str())
-        ("table, t", boost::program_options::value<boost::filesystem::path>(&gtw_table_file)->default_value("gtw_config.json"),
+        ("table,t", boost::program_options::value<boost::filesystem::path>(&gtw_table_file)->default_value("gtw_config.json"),
                     std::string("Specify config path. By default: 'gtw_config.json'").c_str());
 
     boost::program_options::variables_map vm;
@@ -100,12 +99,12 @@ int main(int argc, const char** argv)
         setDbgSink(debug_sink);
     }
 
-    printDebug("MqttGateway/%s: HomeBrain core - MQTT Gateway Starting...", __FUNCTION__);
+    printDebug("MqttGateway/%s: HomeBrain core <-> MQTT Gateway Starting...", __FUNCTION__);
 
     try
     {
-        std::unique_ptr<MqttGateway::MqttGatewayImpl> core_gateway;
-        core_gateway.reset(new MqttGateway::CCapiMqttGateway(std::make_shared<Parsers::CConfigParser>(config_file.string())));
+        std::unique_ptr<MqttGateway::CMqttGatewayImpl> core_gateway;
+        core_gateway.reset(new MqttGateway::CMqttGatewayImpl(std::make_shared<Parsers::CConfigParser>(config_file.string())));
 
         core_gateway->performStart();
 
@@ -117,12 +116,12 @@ int main(int argc, const char** argv)
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
 
-        printDebug("MqttGateway/%s: HomeBrain core - MQTT Gateway Stopping...", __FUNCTION__);
+        printDebug("MqttGateway/%s: HomeBrain core <-> MQTT Gateway Stopping...", __FUNCTION__);
 
         // close all activity
         core_gateway->performStop();
 
-        printDebug("MqttGateway/%s: HomeBrain core - MQTT Gateway Stopped...", __FUNCTION__);
+        printDebug("MqttGateway/%s: HomeBrain core <-> MQTT Gateway Stopped...", __FUNCTION__);
     }
     catch (const std::exception& e)
     {
