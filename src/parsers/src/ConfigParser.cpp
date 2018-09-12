@@ -14,11 +14,11 @@ namespace Parsers
 
 namespace Cfg
 {
-	const std::string c_mqtt_opt             = "MqttClientConfig";
-	const std::string c_mqtt_broker_ip       = "broker_ip";
-	const std::string c_mqtt_broker_port     = "broker_port";
-	const std::string c_mqtt_broker_username = "username";
-	const std::string c_mqtt_broker_password = "password";
+    const std::string c_mqtt_opt             = "MqttClientConfig";
+    const std::string c_mqtt_broker_ip       = "broker";
+    const std::string c_mqtt_broker_port     = "broker_port";
+    const std::string c_mqtt_broker_username = "username";
+    const std::string c_mqtt_broker_password = "password";
 }
 
 CConfigParser::CConfigParser(const std::string& config_path)
@@ -43,8 +43,8 @@ CConfigParser::CConfigParser(const std::string& config_path)
         }
         catch (const std::exception& e)
         {
-            printError("CConfigParser/%s: Error parsing config: ", __FUNCTION__, config_path.c_str());
-            printError("CConfigParser/%s: Error description: ", __FUNCTION__, e.what());
+            printError("CConfigParser/%s: Error parsing config: %s", __FUNCTION__, config_path.c_str());
+            printError("CConfigParser/%s: Error description: %s", __FUNCTION__, e.what());
             throw;
         }
     }

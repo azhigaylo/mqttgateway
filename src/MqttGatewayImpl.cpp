@@ -11,8 +11,10 @@
 namespace MqttGateway
 {
 
-CMqttGatewayImpl::CMqttGatewayImpl(const std::shared_ptr<Parsers::CConfigParser> config)
+CMqttGatewayImpl::CMqttGatewayImpl(const std::shared_ptr<Parsers::CConfigParser>   config,
+                                   const std::shared_ptr<Parsers::CGtwTableParser> gtw_table)
     : m_config(config)
+    , m_gtw_table(gtw_table)
 {
 
     printDebug("CMqttGatewayImpl/%s: created...", __FUNCTION__);

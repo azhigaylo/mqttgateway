@@ -1,15 +1,14 @@
 {
-    "DumperConfig": {
-        "dest_path": "/tmp",
-        "dump_prefix": "adas_"
+    "TableConfig": {
+
     },
     "DPointRouting" : [
        {
            "dpoint_number" : 9,
            "mqtt_topic"    : "home/status/plc/communication/OVEN0",
-           "mqtt_subscribe : false,
+           "mqtt_subscribe" : false,
            "value_mapping" :
-           {
+           [
                {
                    "value"   : 0,
                    "mapp_to" : "ok"
@@ -18,14 +17,14 @@
                    "value"   : 1,
                    "mapp_to" : "error"
                }
-           }
+           ]
        },
        {
            "dpoint_number" : 10,
            "mqtt_topic"    : "home/status/plc/communication/OVEN1",
-           "mqtt_subscribe : false,
+           "mqtt_subscribe" : false,
            "value_mapping" :
-           {
+           [
                {
                    "value"   : 0,
                    "mapp_to" : "ok"
@@ -34,14 +33,14 @@
                    "value"   : 1,
                    "mapp_to" : "error"
                }
-           }
+           ]
        },
        {
            "dpoint_number" : 11,
            "mqtt_topic"    : "home/status/plc/communication/OVEN2",
-           "mqtt_subscribe : false,
+           "mqtt_subscribe" : false,
            "value_mapping" :
-           {
+           [
                {
                    "value"   : 0,
                    "mapp_to" : "ok"
@@ -50,14 +49,14 @@
                    "value"   : 1,
                    "mapp_to" : "error"
                }
-           }
+           ]
        },
        {
            "dpoint_number" : 12,
            "mqtt_topic"    : "home/status/plc/communication/OVEN3",
-           "mqtt_subscribe : false,
+           "mqtt_subscribe" : false,
            "value_mapping" :
-           {
+           [
                {
                    "value"   : 0,
                    "mapp_to" : "ok"
@@ -66,14 +65,14 @@
                    "value"   : 1,
                    "mapp_to" : "error"
                }
-           }
+           ]
         },
         {
            "dpoint_number" : 15,
            "mqtt_topic"    : "home/status/plc/communication/st_hallway",
-           "mqtt_subscribe : false,
+           "mqtt_subscribe" : false,
            "value_mapping" :
-           {
+           [
                {
                    "value"   : 0,
                    "mapp_to" : "ok"
@@ -82,14 +81,14 @@
                    "value"   : 1,
                    "mapp_to" : "error"
                }
-           }
+           ]
         },
         {
            "dpoint_number" : 16,
            "mqtt_topic"    : "home/status/plc/communication/st_hall",
-           "mqtt_subscribe : false,
+           "mqtt_subscribe" : false,
            "value_mapping" :
-           {
+           [
                {
                    "value"   : 0,
                    "mapp_to" : "ok"
@@ -98,14 +97,14 @@
                    "value"   : 1,
                    "mapp_to" : "error"
                }
-           }
+           ]
         },
         {
            "dpoint_number" : 17,
            "mqtt_topic"    : "home/status/plc/communication/st_room1",
-           "mqtt_subscribe : false,
+           "mqtt_subscribe" : false,
            "value_mapping" :
-           {
+           [
                {
                    "value"   : 0,
                    "mapp_to" : "ok"
@@ -114,14 +113,14 @@
                    "value"   : 1,
                    "mapp_to" : "error"
                }
-           }
+           ]
         },
         {
            "dpoint_number" : 18,
            "mqtt_topic"    : "home/status/plc/communication/st_room2",
-           "mqtt_subscribe : false,
+           "mqtt_subscribe" : false,
            "value_mapping" :
-           {
+           [
                {
                    "value"   : 0,
                    "mapp_to" : "ok"
@@ -130,14 +129,14 @@
                    "value"   : 1,
                    "mapp_to" : "error"
                }
-           }
+           ]
         },
         {
            "dpoint_number" : 19,
            "mqtt_topic"    : "home/status/plc/communication/st_room3",
-           "mqtt_subscribe : false,
+           "mqtt_subscribe" : false,
            "value_mapping" :
-           {
+           [
                {
                    "value"   : 0,
                    "mapp_to" : "ok"
@@ -146,14 +145,14 @@
                    "value"   : 1,
                    "mapp_to" : "error"
                }
-           }
+           ]
         },
         {
            "dpoint_number" : 95,
            "mqtt_topic"    : "home/control/alarm/hallway",
-           "mqtt_subscribe : true,
+           "mqtt_subscribe" : true,
            "value_mapping" :
-           {
+           [
                {
                    "value"   : 0,
                    "mapp_to" : "on"
@@ -162,14 +161,14 @@
                    "value"   : 1,
                    "mapp_to" : "off"
                }
-           }
+           ]
         },
         {
            "dpoint_number" : 96,
            "mqtt_topic"    : "home/control/alarm/hall",
-           "mqtt_subscribe : true,
+           "mqtt_subscribe" : true,
            "value_mapping" :
-           {
+           [
                {
                    "value"   : 0,
                    "mapp_to" : "on"
@@ -178,14 +177,14 @@
                    "value"   : 1,
                    "mapp_to" : "off"
                }
-           }
+           ]
         },
         {
            "dpoint_number" : 97,
            "mqtt_topic"    : "home/control/alarm/room1",
-           "mqtt_subscribe : true,
+           "mqtt_subscribe" : true,
            "value_mapping" :
-           {
+           [
                {
                    "value"   : 0,
                    "mapp_to" : "on"
@@ -194,14 +193,14 @@
                    "value"   : 1,
                    "mapp_to" : "off"
                }
-           }
+           ]
         },
         {
            "dpoint_number" : 98,
            "mqtt_topic"    : "home/control/alarm/room2",
-           "mqtt_subscribe : true,
+           "mqtt_subscribe" : true,
            "value_mapping" :
-           {
+           [
                {
                    "value"   : 0,
                    "mapp_to" : "on"
@@ -210,14 +209,14 @@
                    "value"   : 1,
                    "mapp_to" : "off"
                }
-           }
+           ]
         },
         {
            "dpoint_number" : 99,
            "mqtt_topic"    : "home/control/alarm/room3",
-           "mqtt_subscribe : true,
+           "mqtt_subscribe" : true,
            "value_mapping" :
-           {
+           [
                {
                    "value"   : 0,
                    "mapp_to" : "on"
@@ -226,29 +225,29 @@
                    "value"   : 1,
                    "mapp_to" : "off"
                }
-           }
+           ]
         }
     ],
     "APointRouting" : [
         {
            "apoint_number" : 10,
            "mqtt_topic"    : "home/status/temterature/hallway",
-           "mqtt_subscribe : false,
+           "mqtt_subscribe" : false
         },
         {
            "apoint_number" : 11,
            "mqtt_topic"    : "home/status/lighting/hallway",
-           "mqtt_subscribe : false,
+           "mqtt_subscribe" : false
         },
         {
            "apoint_number" : 12,
            "mqtt_topic"    : "home/status/gas/hallway",
-           "mqtt_subscribe : false,
+           "mqtt_subscribe" : false
         },
         {
            "apoint_number" : 14,
            "mqtt_topic"    : "home/engineering/settings/motion_sensotivity/hallway",
-           "mqtt_subscribe : true,
+           "mqtt_subscribe" : true
         }
     ]
 }

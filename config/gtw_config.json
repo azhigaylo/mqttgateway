@@ -1,8 +1,8 @@
 {
     "MqttClientConfig": {
-        "broker_ip": "127.0.0.1",
-        "broker_port": 1883,
-        "username": "hombrain",
-        "password": "1234"
+        "broker": "nick.asdf.kiev.ua",
+        "broker_port": 23500,
+        "username": "test1",
+        "password": "123!@#"
     }
 }
