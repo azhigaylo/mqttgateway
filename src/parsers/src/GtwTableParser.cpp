@@ -41,7 +41,7 @@ CGtwTableParser::CGtwTableParser(const std::string& table_path)
             pt::read_json(table_path, table_ptree);
 
             // gtw options
-            //pt::ptree &main_cfg_node = table_ptree.get_child(Tbl::c_gtw_table_main_cfg);
+            // pt::ptree &main_cfg_node = table_ptree.get_child(Tbl::c_gtw_table_main_cfg);
 
             // create discret point rouring table
             for (pt::ptree::value_type &d_gtw_item : table_ptree.get_child(Tbl::c_gtw_table_d_routing))
@@ -50,9 +50,17 @@ CGtwTableParser::CGtwTableParser(const std::string& table_path)
                 std::string item_topic = d_gtw_item.second.get<std::string>(Tbl::c_gtw_item_topic);
                 bool itim_subscription = d_gtw_item.second.get<bool>(Tbl::c_gtw_item_subscription);
 
-                printDebug("CConfigParser/%s: d_num = %i / topic = %s / s = %i", __FUNCTION__, item_d_number,
-                                                                                               item_topic.c_str(),
-                                                                                               itim_subscription);
+                printDebug("CConfigParser/%s: d_num = %i / s = %i / topic = %s", __FUNCTION__, item_d_number,
+                                                                                               itim_subscription,
+                                                                                               item_topic.c_str());
+                // create discret point rouring table
+                for (pt::ptree::value_type &d_item_mapping : d_gtw_item.second.get_child(Tbl::c_gtw_item_mapping))
+                {
+                   uint32_t value_int = static_cast<uint32_t>(d_item_mapping.second.get<unsigned>(Tbl::c_gtw_item_mapping_value_int));
+                   std::string value_str = d_item_mapping.second.get<std::string>(Tbl::c_gtw_item_mapping_value_str);
+
+                   printDebug("CConfigParser/%s: int = %i <-> str = %s", __FUNCTION__, value_int, value_str.c_str());
+                }
             }
 
             // create analog point rouring table
@@ -62,9 +70,9 @@ CGtwTableParser::CGtwTableParser(const std::string& table_path)
                 std::string item_topic = a_gtw_item.second.get<std::string>(Tbl::c_gtw_item_topic);
                 bool itim_subscription = a_gtw_item.second.get<bool>(Tbl::c_gtw_item_subscription);
 
-                printDebug("CConfigParser/%s: a_num = %i / topic = %s / s = %i", __FUNCTION__, item_a_number,
-                                                                                               item_topic.c_str(),
-                                                                                               itim_subscription);
+                printDebug("CConfigParser/%s: a_num = %i / s = %i / topic = %s", __FUNCTION__, item_a_number,
+                                                                                               itim_subscription,
+                                                                                               item_topic.c_str());
             }
         }
         catch (const std::exception& e)
