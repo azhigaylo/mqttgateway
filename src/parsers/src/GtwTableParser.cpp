@@ -46,33 +46,41 @@ CGtwTableParser::CGtwTableParser(const std::string& table_path)
             // create discret point rouring table
             for (pt::ptree::value_type &d_gtw_item : table_ptree.get_child(Tbl::c_gtw_table_d_routing))
             {
-                uint32_t item_d_number = static_cast<uint32_t>(d_gtw_item.second.get<unsigned>(Tbl::c_gtw_item_d_number));
-                std::string item_topic = d_gtw_item.second.get<std::string>(Tbl::c_gtw_item_topic);
-                bool itim_subscription = d_gtw_item.second.get<bool>(Tbl::c_gtw_item_subscription);
+                router_item_t router_item;
+                router_item.number = static_cast<uint32_t>(d_gtw_item.second.get<unsigned>(Tbl::c_gtw_item_d_number));
+                router_item.mqtt_topic = d_gtw_item.second.get<std::string>(Tbl::c_gtw_item_topic);
+                router_item.topic_sub = d_gtw_item.second.get<bool>(Tbl::c_gtw_item_subscription);
 
-                printDebug("CConfigParser/%s: d_num = %i / s = %i / topic = %s", __FUNCTION__, item_d_number,
-                                                                                               itim_subscription,
-                                                                                               item_topic.c_str());
+                printDebug("CConfigParser/%s: d_num = %i / s = %i / topic = %s", __FUNCTION__, router_item.number,
+                                                                                               router_item.topic_sub,
+                                                                                               router_item.mqtt_topic.c_str());
                 // create discret point rouring table
                 for (pt::ptree::value_type &d_item_mapping : d_gtw_item.second.get_child(Tbl::c_gtw_item_mapping))
                 {
-                   uint32_t value_int = static_cast<uint32_t>(d_item_mapping.second.get<unsigned>(Tbl::c_gtw_item_mapping_value_int));
+                   uint16_t value_int = static_cast<uint32_t>(d_item_mapping.second.get<unsigned>(Tbl::c_gtw_item_mapping_value_int));
                    std::string value_str = d_item_mapping.second.get<std::string>(Tbl::c_gtw_item_mapping_value_str);
+
+                   router_item.mapping.push_back(std::make_pair(value_int, value_str));
 
                    printDebug("CConfigParser/%s: int = %i <-> str = %s", __FUNCTION__, value_int, value_str.c_str());
                 }
+
+                m_gwt_vector.push_back(std::make_pair(Tbl::c_gtw_table_d_routing, router_item));
             }
 
             // create analog point rouring table
             for (pt::ptree::value_type &a_gtw_item : table_ptree.get_child(Tbl::c_gtw_table_a_routing))
             {
-                uint32_t item_a_number = static_cast<uint32_t>(a_gtw_item.second.get<unsigned>(Tbl::c_gtw_item_a_number));
-                std::string item_topic = a_gtw_item.second.get<std::string>(Tbl::c_gtw_item_topic);
-                bool itim_subscription = a_gtw_item.second.get<bool>(Tbl::c_gtw_item_subscription);
+                router_item_t router_item;
 
-                printDebug("CConfigParser/%s: a_num = %i / s = %i / topic = %s", __FUNCTION__, item_a_number,
-                                                                                               itim_subscription,
-                                                                                               item_topic.c_str());
+                router_item.number = static_cast<uint32_t>(a_gtw_item.second.get<unsigned>(Tbl::c_gtw_item_a_number));
+                router_item.mqtt_topic = a_gtw_item.second.get<std::string>(Tbl::c_gtw_item_topic);
+                router_item.topic_sub  = a_gtw_item.second.get<bool>(Tbl::c_gtw_item_subscription);
+
+                printDebug("CConfigParser/%s: a_num = %i / s = %i / topic = %s", __FUNCTION__, router_item.number,
+                                                                                               router_item.topic_sub,
+                                                                                               router_item.mqtt_topic.c_str());
+                m_gwt_vector.push_back(std::make_pair(Tbl::c_gtw_table_a_routing, router_item));
             }
         }
         catch (const std::exception& e)

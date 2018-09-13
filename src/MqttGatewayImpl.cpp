@@ -29,6 +29,16 @@ void CMqttGatewayImpl::performStart()
 {
     try
     {
+       const std::vector<Parsers::CGtwTableParser::gwt_item_t>& gtw_table = m_gtw_table->getGwtTable();
+
+       for(auto &gwt_item: gtw_table)
+       {
+          printDebug("CConfigParser/%s: %s :: num = %i / s = %i / topic = %s", __FUNCTION__,
+                                                                               gwt_item.first.c_str(),
+                                                                               gwt_item.second.number,
+                                                                               gwt_item.second.topic_sub,
+                                                                               gwt_item.second.mqtt_topic.c_str());
+       }
         // start mqtt -> core SW part
         //m_mqtt_handler = std::make_shared<CMqttDataHandler>(m_config);
         //m_mqtt_handler->startListening(std::bind(&MqttGatewayImpl.hpp::publisher, this, std::placeholders::_1));

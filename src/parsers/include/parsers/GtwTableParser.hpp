@@ -1,7 +1,8 @@
 #pragma once
 
 #include <string>
-#include <utility>      // std::pair, std::make_pair
+#include <vector>
+#include <utility>
 
 namespace Parsers
 {
@@ -10,35 +11,32 @@ class CGtwTableParser final
 {
     public:
 
-      std::pair <std::uint16_t, std::string> mapp_item_t;
+       struct router_item_t
+       {
+           typedef std::pair <std::uint16_t, std::string> mapp_item_t;
 
-      struct d_to_t_router_item_t
-      {
-         std::string mqtt_topic;
-         bool topic_sub;
-         std::vector<mapp_item_t>mapping;
-      };
+           bool        topic_sub;
+           uint32_t    number;
+           std::string mqtt_topic;
+           std::vector<mapp_item_t> mapping;
+       };
 
-      struct t_to_d_router_item_t
-      {
-         std::string mqtt_topic;
-         bool topic_sub;
-         std::vector<mapp_item_t>mapping;
-      };
-
-
-       product1 = std::make_pair(std::string("lightbulbs"),0.99);
-
-
+       typedef std::pair <std::string, router_item_t> gwt_item_t;
 
         explicit CGtwTableParser(const std::string& table_path);
         ~CGtwTableParser();
+
+        const std::vector<gwt_item_t>& getGwtTable()const
+        {
+           return m_gwt_vector;
+        }
 
     private:
 
         CGtwTableParser(const CGtwTableParser&) = delete;
         CGtwTableParser& operator=(const CGtwTableParser&) = delete;
 
+        std::vector<gwt_item_t> m_gwt_vector;
 };
 
 } //namespace Parsers
