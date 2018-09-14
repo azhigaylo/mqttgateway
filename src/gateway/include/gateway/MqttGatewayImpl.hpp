@@ -28,6 +28,12 @@ class CMqttGatewayImpl final
         void performStart();
         void performStop();
 
+    protected:
+        void slotTopicSubscribe(const std::string& topic_name);
+        void slotTopicWrire(const std::string& topic_name, const std::string& topic_value);
+        void slotDigitalPointSet(uint32_t poit_num, uint16_t point_value);
+        void slotAnalogPointSet(uint32_t poit_num, const std::string& point_value);
+
     private:
 
         std::shared_ptr<Parsers::CConfigParser>   m_config;

@@ -22,4 +22,5 @@ CDigitalGtwItem::~CDigitalGtwItem()
 {
     printDebug("CDigitalGtwItem/%s: was deleted", __FUNCTION__);
 }
+
 } //namespase Modules

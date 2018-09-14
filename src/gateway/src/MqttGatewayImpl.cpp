@@ -8,7 +8,8 @@
 
 #include "common/slog.h"
 #include "GtwItemFactory.hpp"
-
+#include "AnalogGtwItem.hpp"
+#include "DigitalGtwItem.hpp"
 
 namespace MqttGateway
 {
@@ -19,7 +20,7 @@ CMqttGatewayImpl::CMqttGatewayImpl(const std::shared_ptr<Parsers::CConfigParser>
     , m_gtw_table(gtw_table)
 {
 
-    printDebug("CMqttGatewayImpl/%s: created...", __FUNCTION__);
+    printDebug("CMqttGatewayImpl/%s: created", __FUNCTION__);
 }
 
 CMqttGatewayImpl::~CMqttGatewayImpl()
@@ -29,6 +30,8 @@ CMqttGatewayImpl::~CMqttGatewayImpl()
 
 void CMqttGatewayImpl::performStart()
 {
+    printDebug("CMqttGatewayImpl/%s: starting...", __FUNCTION__);
+
     try
     {
         // create gateway items
@@ -37,10 +40,29 @@ void CMqttGatewayImpl::performStart()
 
         for(auto &gwt_item: gtw_table)
         {
-            auto mod_ptr = mf.createItem(gwt_item);
-            if (mod_ptr)
+            auto item_ptr = mf.createItem(gwt_item);
+            if (item_ptr)
             {
-                m_gtw_items.push_back(std::move(mod_ptr.get()));
+                // test for digital item
+                if (nullptr != dynamic_cast<Modules::CDigitalGtwItem*>(item_ptr.get().get()))
+                {
+                    Modules::CDigitalGtwItem* d_item_ptr = dynamic_cast<Modules::CDigitalGtwItem*>(item_ptr.get().get());
+
+                    d_item_ptr->connToSigTopicSubscribe(boost::bind(&CMqttGatewayImpl::slotTopicSubscribe, this,_1));
+                    d_item_ptr->connToSigTopicWrire(boost::bind(&CMqttGatewayImpl::slotTopicWrire, this,_1, _2));
+                    d_item_ptr->connSigDigitalPointSet(boost::bind(&CMqttGatewayImpl::slotDigitalPointSet, this,_1, _2));
+                }
+                // test for analog item
+                if (nullptr != dynamic_cast<Modules::CAnalogGtwItem*>(item_ptr.get().get()))
+                {
+                    Modules::CAnalogGtwItem* a_item_ptr = dynamic_cast<Modules::CAnalogGtwItem*>(item_ptr.get().get());
+
+                    a_item_ptr->connToSigTopicSubscribe(boost::bind(&CMqttGatewayImpl::slotTopicSubscribe, this,_1));
+                    a_item_ptr->connToSigTopicWrire(boost::bind(&CMqttGatewayImpl::slotTopicWrire, this,_1, _2));
+                    a_item_ptr->connSigAnalogPointSet(boost::bind(&CMqttGatewayImpl::slotAnalogPointSet, this,_1, _2));
+                }
+
+                m_gtw_items.push_back(std::move(item_ptr.get()));
             }
         }
         // start mqtt -> core SW part
@@ -57,7 +79,7 @@ void CMqttGatewayImpl::performStart()
         throw;
     }
 
-    printDebug("CMqttGatewayImpl/%s: started...", __FUNCTION__);
+    printDebug("CMqttGatewayImpl/%s: started", __FUNCTION__);
 }
 
 void CMqttGatewayImpl::performStop()
@@ -70,5 +92,24 @@ void CMqttGatewayImpl::performStop()
     printDebug("CMqttGatewayImpl/%s: <-", __FUNCTION__);
 }
 
+void CMqttGatewayImpl::slotTopicSubscribe(const std::string& /*topic_name*/)
+{
+
+}
+
+void CMqttGatewayImpl::slotTopicWrire(const std::string& /*topic_name*/, const std::string& /*topic_value*/)
+{
+
+}
+
+void CMqttGatewayImpl::slotDigitalPointSet(uint32_t /*poit_num*/, uint16_t /*point_value*/)
+{
+
+}
+
+void CMqttGatewayImpl::slotAnalogPointSet(uint32_t /*poit_num*/, const std::string& /*point_value*/)
+{
+
+}
 
 } // namespace MqttGateway
