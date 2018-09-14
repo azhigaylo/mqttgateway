@@ -12,7 +12,10 @@ namespace Modules
 CDigitalGtwItem::CDigitalGtwItem(const Parsers::CGtwTableParser::router_item_t& data)
     : IGtwItemBase(data)
 {
-
+    printDebug("CConfigParser/%s:num = %i / s = %i / topic = %s", __FUNCTION__,
+                                                                  data.number,
+                                                                  data.topic_sub,
+                                                                  data.mqtt_topic.c_str());
 }
 
 CDigitalGtwItem::~CDigitalGtwItem()

@@ -2,7 +2,7 @@
 
 #include <memory>
 
-#include "GtwItemBase.hpp"
+#include "gateway/GtwItemBase.hpp"
 
 namespace Modules
 {
