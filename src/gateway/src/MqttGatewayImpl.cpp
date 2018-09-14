@@ -1,4 +1,4 @@
-#include "MqttGatewayImpl.hpp"
+#include "gateway/MqttGatewayImpl.hpp"
 
 #include <vector>
 #include <boost/bind.hpp>

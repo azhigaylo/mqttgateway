@@ -9,8 +9,7 @@
 #include <boost/program_options.hpp>
 
 #include "common/slog.h"
-
-#include "MqttGatewayImpl.hpp"
+#include "gateway/MqttGatewayImpl.hpp"
 
 namespace
 {

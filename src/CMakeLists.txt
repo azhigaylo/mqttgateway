@@ -12,12 +12,11 @@ endif()
 
 add_subdirectory(common)
 add_subdirectory(parsers)
-#add_subdirectory(dataclient)
+add_subdirectory(gateway)
 #add_subdirectory(mqttclient)
 
 add_executable(${PROJECT_NAME}
     ${CMAKE_CURRENT_SOURCE_DIR}/MqttGateway.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/MqttGatewayImpl.cpp
     )
 
 target_link_libraries(${PROJECT_NAME}
@@ -27,4 +26,5 @@ target_link_libraries(${PROJECT_NAME}
     Boost::system
     common
     parsers
+    gateway
     )
