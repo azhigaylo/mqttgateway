@@ -26,10 +26,10 @@ class CGtwTableParser final
         explicit CGtwTableParser(const std::string& table_path);
         ~CGtwTableParser();
 
-        const std::vector<gwt_item_t>& getGwtTable()const
-        {
-           return m_gwt_vector;
-        }
+        const std::vector<gwt_item_t>& getGwtTable()const {return m_gwt_vector; }
+
+        static const std::string& getDigitalKey();
+        static const std::string& getAnalogKey();
 
     private:
 

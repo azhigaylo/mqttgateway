@@ -26,6 +26,9 @@ namespace Tbl
     const std::string c_gtw_item_a_number           = "apoint_number";
 }
 
+const std::string& CGtwTableParser::getDigitalKey() {return Tbl::c_gtw_table_d_routing;}
+const std::string& CGtwTableParser::getAnalogKey()  {return Tbl::c_gtw_table_a_routing;}
+
 CGtwTableParser::CGtwTableParser(const std::string& table_path)
 {
     if (!boost::filesystem::exists(table_path))

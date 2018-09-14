@@ -12,6 +12,9 @@ endif()
 
 add_library(${PROJECT_NAME} STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/MqttGatewayImpl.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/GtwItemFactory.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/DigitalGtwItem.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/AnalogGtwItem.cpp
     )
 
 target_include_directories(${PROJECT_NAME}
