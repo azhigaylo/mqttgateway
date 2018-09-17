@@ -9,6 +9,7 @@ class IGtwItemBase
 {
     public:
         virtual ~IGtwItemBase() = default;
+        virtual void initItem() = 0;
 
     protected:
 

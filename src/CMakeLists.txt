@@ -13,6 +13,7 @@ endif()
 add_subdirectory(common)
 add_subdirectory(parsers)
 add_subdirectory(gateway)
+add_subdirectory(dataclient)
 #add_subdirectory(mqttclient)
 
 add_executable(${PROJECT_NAME}

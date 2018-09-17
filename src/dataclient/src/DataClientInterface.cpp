@@ -1,31 +1,17 @@
 #include "dataclient/DataClientInterface.hpp"
 
-#include <QtCore>
-#include <QtNetwork>
-#include <QDebug>
-
 #include <iostream>
 #include <chrono>
 #include <string>
+#include <thread>
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 #include <boost/function.hpp>
 
-void CDataClientInterface::startDataConnection_slot(bool conn_request, QString srv, int port)
-{
-    if (true == conn_request)
-    {
-        startDataConnection(srv.toStdString(), port);
-    }
-    else
-    {
-        stopDataConnection();
-    }
-}
+#include "common/slog.h"
 
-CDataClientInterface::CDataClientInterface(QObject *parent)
-   : QObject(parent)
-   , m_raw_buf(m_read_buffer.prepare(0))
+CDataClientInterface::CDataClientInterface()
+   : m_raw_buf(m_read_buffer.prepare(0))
    , m_connection_state(false)
 {
     m_io_dummy_work = std::make_shared<boost::asio::io_service::work>(m_io_service);
@@ -47,12 +33,13 @@ void CDataClientInterface::startDataConnection(std::string host, int server_port
         server.address(boost::asio::ip::address::from_string(host));
         server.port(server_port);
 
-        qDebug() << __func__ << ": try to connect to " << QString(host.c_str()) << ":" << server_port;
+        printDebug("CDataClientInterface/%s: : try to connect to '%s:%i'", __FUNCTION__, host.c_str(), server_port);
+
         m_boost_socket->async_connect(server, boost::bind(&CDataClientInterface::connectionHandler, this, boost::asio::placeholders::error));
     }
     catch(boost::system::system_error e)
     {
-        qDebug() << __func__ << ":" << e.code();
+       printError("CDataClientInterface/%s: error = %i", __FUNCTION__, e.code());
     }
 }
 
@@ -133,7 +120,7 @@ void CDataClientInterface::connectionHandler(const boost::system::error_code& er
     {
         updateConnectionState(true);
 
-        qDebug() << __func__ << ": connected...";
+        printDebug("CDataClientInterface/%s: connected...", __FUNCTION__);
 
         // allocate new subbuffer & wait for response package
         m_raw_buf = m_read_buffer.prepare(sizeof(TResponse));
@@ -151,7 +138,7 @@ void CDataClientInterface::connectionHandler(const boost::system::error_code& er
     }
     else
     {
-        qDebug() <<  __func__ << ": error(" << error.value() << ") message: " << QString(error.message().c_str());
+       printError("CDataClientInterface/%s: error(%i), message: %s", __FUNCTION__, error.value(), error.message().c_str());
     }
 }
 
@@ -183,13 +170,13 @@ void CDataClientInterface::readHandler(const boost::system::error_code& error, s
             case boost::system::errc::connection_reset:
             case boost::system::errc::no_such_file_or_directory :
             {
-                qDebug() <<  __func__ << ": error(" << error.value() << ") message: " << QString(error.message().c_str());
+                //qDebug() <<  __func__ << ": error(" << error.value() << ") message: " << QString(error.message().c_str());
                 updateConnectionState(false);
                 break;
             }
             default :
             {
-                qDebug() <<  __func__ << ": error(" << error.value() << ") message: " << QString(error.message().c_str());
+                printError("CDataClientInterface/%s: error(%i), message: %s", __FUNCTION__, error.value(), error.message().c_str());
                 break;
             }
         }
@@ -208,13 +195,11 @@ void CDataClientInterface::processIncoming()
             // read header
             TResponse package;
             is_data.read(reinterpret_cast<char*>(&package.header), sizeof(package.header));
-            if (is_data.gcount() >= sizeof(package.header))
+            if ((static_cast<std::size_t>(is_data.gcount())) >= sizeof(package.header))
             {
-                qDebug() << __func__ << ": we got a header: head_strt=" << package.header.head_strt << ", data_size=" << package.header.data_size
-                         << ", cmd=" << package.header.cmd << ", start_point=" << package.header.start_point << ", number_point=" << package.header.number_point;
                 // read data
                 is_data.read(reinterpret_cast<char*>(&package.array), package.header.data_size - sizeof(package.header));
-                if (is_data.gcount() >=  package.header.data_size - sizeof(package.header))
+                if ((static_cast<std::size_t>(is_data.gcount())) >=  package.header.data_size - sizeof(package.header))
                 {
                     switch(package.header.cmd)
                     {
@@ -260,7 +245,7 @@ void CDataClientInterface::processIncoming()
                       }
                       default :
                       {
-                         qDebug() << __func__ << ": unknown command !";
+                          printWarning("CDataClientInterface/%s: unknown command = %i", __FUNCTION__, package.header.cmd);
                           break;
                       }
                     }
@@ -273,7 +258,7 @@ void CDataClientInterface::processIncoming()
     }
     else
     {
-        qDebug() << __func__ << ": bad package, skip it...";
+        printWarning("CDataClientInterface/%s: bad package, skip it...", __FUNCTION__);
         m_read_buffer.consume(m_read_buffer.size());
         throw;
     }
@@ -282,7 +267,7 @@ void CDataClientInterface::processIncoming()
 void CDataClientInterface::updateConnectionState(bool state)
 {
     m_connection_state = state;
-    emit dataConnection(m_connection_state);
+    dataConnection(m_connection_state);
 }
 
 void CDataClientInterface::sendGetDpointsReq(uint16_t start_point, uint16_t number_point)
@@ -347,12 +332,11 @@ void CDataClientInterface::serviceLoop()
 {
     try
     {
-        qDebug() << __func__ << ": io service was started";
         m_io_service.run();
-        qDebug() << __func__ << ": io service shutdown...";
+        printDebug("CDataClientInterface/%s: io service shutdown...", __FUNCTION__);
     }
     catch(const std::exception& e)
     {
-        qDebug() << __func__ << ": input Err: " << e.what();
+       printWarning("CDataClientInterface/%s: io service Err: %s", __FUNCTION__, e.what());
     }
 }

@@ -22,4 +22,13 @@ CAnalogGtwItem::~CAnalogGtwItem()
 {
     printDebug("CAnalogGtwItem/%s: was deleted", __FUNCTION__);
 }
+
+void CAnalogGtwItem::initItem()
+{
+    if (true == m_router_item.topic_sub)
+    {
+       m_sig_topic_subscribe(m_router_item.mqtt_topic);
+    }
+}
+
 } //namespase Modules

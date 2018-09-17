@@ -1,18 +1,13 @@
-#ifndef DATACLIENTINTERFACE_H
-#define DATACLIENTINTERFACE_H
+#pragma once
 
-#include <QtCore>
-#include <QtNetwork>
 #include <mutex>
 #include <boost/asio.hpp>
 #include <boost/optional.hpp>
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/thread/scoped_thread.hpp>
 
-class CDataClientInterface : public QObject
+class CDataClientInterface final
 {
-    Q_OBJECT
-
     enum
     {
         d_point_total = 1000,
@@ -81,16 +76,13 @@ class CDataClientInterface : public QObject
 
     #pragma pack(pop)
 
-    signals:
-        void dpoint_updated(int strt_point, int amouint_point);
-        void apoint_updated(int strt_point, int amouint_point);
-        void dataConnection(bool success);
-
-    public slots:
-        void startDataConnection_slot(bool conn_request, QString srv, int port);
+    //signals:
+        void dpoint_updated(int /*strt_point*/, int /*amouint_point*/){}
+        void apoint_updated(int /*strt_point*/, int /*amouint_point*/){}
+        void dataConnection(bool /*success*/){}
 
     public:
-        explicit CDataClientInterface(QObject *parent = 0);
+        explicit CDataClientInterface();
         virtual ~CDataClientInterface();
 
         void startDataConnection(std::string host, int server_port);
@@ -110,6 +102,9 @@ class CDataClientInterface : public QObject
         uint32_t getAPointAmount() const {return a_point_total;}
 
     private:
+
+        CDataClientInterface(const CDataClientInterface&) = delete;
+        CDataClientInterface& operator=(const CDataClientInterface&) = delete;
 
         void connectionHandler(const boost::system::error_code& error);
         void readHandler(const boost::system::error_code& error, size_t bytes_transferred);
@@ -140,5 +135,3 @@ class CDataClientInterface : public QObject
 
         std::atomic_bool                               m_connection_state;
 };
-
-#endif // DATACLIENTINTERFACE_H

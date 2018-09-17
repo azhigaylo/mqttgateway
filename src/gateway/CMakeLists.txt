@@ -26,4 +26,5 @@ target_link_libraries(${PROJECT_NAME}
     Boost::thread
     common
     parsers
+    dataclient
     )

@@ -62,11 +62,14 @@ void CMqttGatewayImpl::performStart()
                     a_item_ptr->connSigAnalogPointSet(boost::bind(&CMqttGatewayImpl::slotAnalogPointSet, this,_1, _2));
                 }
 
+                item_ptr.get()->initItem();
                 m_gtw_items.push_back(std::move(item_ptr.get()));
             }
         }
-        // start mqtt -> core SW part
-        //m_mqtt_handler = std::make_shared<CMqttDataHandler>(m_config);
+
+        // start HW core <-> gateway
+        m_data_client = std::make_shared<CDataClientInterface>();
+        m_data_client->startDataConnection(std::string("127.0.0.1"), 8096);
         //m_mqtt_handler->startListening(std::bind(&MqttGatewayImpl.hpp::publisher, this, std::placeholders::_1));
 
         // start core -> mqtt SW part
@@ -92,9 +95,10 @@ void CMqttGatewayImpl::performStop()
     printDebug("CMqttGatewayImpl/%s: <-", __FUNCTION__);
 }
 
-void CMqttGatewayImpl::slotTopicSubscribe(const std::string& /*topic_name*/)
+void CMqttGatewayImpl::slotTopicSubscribe(const std::string& topic_name)
 {
-
+    //m_mqtt_handler->();
+    printDebug("CMqttGatewayImpl/%s: need sub for topic '%s'", __FUNCTION__, topic_name.c_str());
 }
 
 void CMqttGatewayImpl::slotTopicWrire(const std::string& /*topic_name*/, const std::string& /*topic_value*/)

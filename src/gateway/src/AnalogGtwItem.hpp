@@ -19,6 +19,8 @@ class CAnalogGtwItem final : public IGtwItemBase
         CAnalogGtwItem(const Parsers::CGtwTableParser::router_item_t& data);
         virtual ~CAnalogGtwItem() override;
 
+        void initItem() override;
+
         boost::signals2::connection connToSigTopicSubscribe(const SigTopicSubscribe::slot_type &slot)
         {return m_sig_topic_subscribe.connect(slot);}
         boost::signals2::connection connToSigTopicWrire(const SigTopicWrire::slot_type &slot)

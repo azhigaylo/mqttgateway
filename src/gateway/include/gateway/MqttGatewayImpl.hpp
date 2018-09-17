@@ -12,6 +12,7 @@
 //#include "MqttDataHandler.hpp"
 #include "parsers/ConfigParser.hpp"
 #include "parsers/GtwTableParser.hpp"
+#include "dataclient/DataClientInterface.hpp"
 
 namespace MqttGateway
 {
@@ -38,6 +39,7 @@ class CMqttGatewayImpl final
 
         std::shared_ptr<Parsers::CConfigParser>   m_config;
         std::shared_ptr<Parsers::CGtwTableParser> m_gtw_table;
+        std::shared_ptr<CDataClientInterface>     m_data_client;
 
         std::vector<TGtwItemPtr> m_gtw_items;
 };
