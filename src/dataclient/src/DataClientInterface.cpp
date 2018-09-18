@@ -10,9 +10,11 @@
 
 #include "common/slog.h"
 
-CDataClientInterface::CDataClientInterface()
+CDataClientInterface::CDataClientInterface(uint32_t d_amount, uint32_t a_amount)
    : m_raw_buf(m_read_buffer.prepare(0))
    , m_connection_state(false)
+   , m_a_point_amount(a_amount)
+   , m_d_point_amount(d_amount)
 {
     m_io_dummy_work = std::make_shared<boost::asio::io_service::work>(m_io_service);
     m_srv_thread.reset(new boost::scoped_thread<>(boost::bind(&CDataClientInterface::serviceLoop, this)));
@@ -23,6 +25,7 @@ CDataClientInterface::~CDataClientInterface()
 {
     m_io_service.stop();
     m_srv_thread->join();
+    printDebug("CDataClientInterface/%s: deleted.", __FUNCTION__);
 }
 
 void CDataClientInterface::startDataConnection(std::string host, int server_port)
@@ -47,6 +50,8 @@ void CDataClientInterface::stopDataConnection()
 {
     m_boost_socket->cancel();
     m_boost_socket->close();
+
+    printDebug("CDataClientInterface/%s: socket was closed.", __FUNCTION__);
 }
 
 // --------------------------------------------------------
@@ -131,9 +136,9 @@ void CDataClientInterface::connectionHandler(const boost::system::error_code& er
                                                                boost::asio::placeholders::error,
                                                                boost::asio::placeholders::bytes_transferred));
         // send start requests
-        m_comm_thread.reset(new boost::scoped_thread<>([this](){ sendGetDpointsReq(0, d_point_total);
+        m_comm_thread.reset(new boost::scoped_thread<>([this](){ sendGetDpointsReq(0, m_d_point_amount);
                                                                  std::this_thread::sleep_for(std::chrono::milliseconds(10));
-                                                                 sendGetApointsReq(0, a_point_total);
+                                                                 sendGetApointsReq(0, m_a_point_amount);
                                                                  std::this_thread::sleep_for(std::chrono::milliseconds(10));}));
     }
     else
@@ -170,7 +175,6 @@ void CDataClientInterface::readHandler(const boost::system::error_code& error, s
             case boost::system::errc::connection_reset:
             case boost::system::errc::no_such_file_or_directory :
             {
-                //qDebug() <<  __func__ << ": error(" << error.value() << ") message: " << QString(error.message().c_str());
                 updateConnectionState(false);
                 break;
             }
@@ -205,40 +209,48 @@ void CDataClientInterface::processIncoming()
                     {
                       case GetDiscretPoint :
                       {
-                         std::lock_guard<std::mutex> lock(m_dpoint_mtx);
-                         for (int i=0; i < package.header.number_point; i++)
                          {
-                            DPOINT[package.header.start_point + i] = package.array.digital[i];
-                         }
+                            std::lock_guard<std::mutex> lock(m_dpoint_mtx);
+                            for (int i=0; i < package.header.number_point; i++)
+                            {
+                               DPOINT[package.header.start_point + i] = package.array.digital[i];
+                            }
+                            }
                          m_sig_digital_point_update(package.header.start_point, package.header.number_point);
                          break;
                       }
                       case GetAnalogPoint :
                       {
-                         std::lock_guard<std::mutex> lock(m_apoint_mtx);
-                         for (int i=0; i < package.header.number_point; i++)
                          {
-                            APOINT[package.header.start_point + i] = package.array.analog[i];
+                            std::lock_guard<std::mutex> lock(m_apoint_mtx);
+                            for (int i=0; i < package.header.number_point; i++)
+                            {
+                               APOINT[package.header.start_point + i] = package.array.analog[i];
+                            }
                          }
                          m_sig_analog_point_update(package.header.start_point, package.header.number_point);
                          break;
                       }
                       case NotifyDiscretPoint :
                       {
-                         std::lock_guard<std::mutex> lock(m_dpoint_mtx);
-                         for (int i=0; i < package.header.number_point; i++)
                          {
-                            DPOINT[package.header.start_point + i] = package.array.digital[i];
+                            std::lock_guard<std::mutex> lock(m_dpoint_mtx);
+                            for (int i=0; i < package.header.number_point; i++)
+                            {
+                               DPOINT[package.header.start_point + i] = package.array.digital[i];
+                            }
                          }
                          m_sig_digital_point_update(package.header.start_point, package.header.number_point);
                          break;
                       }
                       case NotifyAnalogPoint :
                       {
-                         std::lock_guard<std::mutex> lock(m_apoint_mtx);
-                         for (int i=0; i < package.header.number_point; i++)
                          {
-                            APOINT[package.header.start_point + i] = package.array.analog[i];
+                            std::lock_guard<std::mutex> lock(m_apoint_mtx);
+                            for (int i=0; i < package.header.number_point; i++)
+                            {
+                               APOINT[package.header.start_point + i] = package.array.analog[i];
+                            }
                          }
                          m_sig_analog_point_update(package.header.start_point, package.header.number_point);
                          break;

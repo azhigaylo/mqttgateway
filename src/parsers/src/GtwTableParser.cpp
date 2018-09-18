@@ -30,6 +30,8 @@ const std::string& CGtwTableParser::getDigitalKey() {return Tbl::c_gtw_table_d_r
 const std::string& CGtwTableParser::getAnalogKey()  {return Tbl::c_gtw_table_a_routing;}
 
 CGtwTableParser::CGtwTableParser(const std::string& table_path)
+    : m_digital_max_number (0)
+    , m_analog_max_number  (0)
 {
     if (!boost::filesystem::exists(table_path))
     {
@@ -67,7 +69,7 @@ CGtwTableParser::CGtwTableParser(const std::string& table_path)
 
                    printDebug("CConfigParser/%s: int = %i <-> str = %s", __FUNCTION__, value_int, value_str.c_str());
                 }
-
+                digitalCheckForMax(router_item.number);
                 m_gwt_vector.push_back(std::make_pair(Tbl::c_gtw_table_d_routing, router_item));
             }
 
@@ -83,6 +85,7 @@ CGtwTableParser::CGtwTableParser(const std::string& table_path)
                 printDebug("CConfigParser/%s: a_num = %i / s = %i / topic = %s", __FUNCTION__, router_item.number,
                                                                                                router_item.topic_sub,
                                                                                                router_item.mqtt_topic.c_str());
+                analogCheckForMax(router_item.number);
                 m_gwt_vector.push_back(std::make_pair(Tbl::c_gtw_table_a_routing, router_item));
             }
         }
@@ -98,6 +101,16 @@ CGtwTableParser::CGtwTableParser(const std::string& table_path)
 CGtwTableParser::~CGtwTableParser()
 {
     printDebug("CConfigParser/%s: removed...", __FUNCTION__);
+}
+
+void CGtwTableParser::digitalCheckForMax(uint32_t value)
+{
+    if (m_digital_max_number < value) m_digital_max_number = value + 1;
+}
+
+void CGtwTableParser::analogCheckForMax(uint32_t value)
+{
+   if (m_analog_max_number < value) m_analog_max_number = value + 1;
 }
 
 } //namespase Parsers

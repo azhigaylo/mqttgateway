@@ -31,12 +31,20 @@ class CGtwTableParser final
         static const std::string& getDigitalKey();
         static const std::string& getAnalogKey();
 
+        uint32_t getDigitalPointAmount()const {return m_digital_max_number;}
+        uint32_t getAnalogPointAmount()const {return m_analog_max_number;}
+
     private:
 
         CGtwTableParser(const CGtwTableParser&) = delete;
         CGtwTableParser& operator=(const CGtwTableParser&) = delete;
 
+        void digitalCheckForMax(uint32_t value);
+        void analogCheckForMax(uint32_t value);
+
         std::vector<gwt_item_t> m_gwt_vector;
+        uint32_t m_digital_max_number;
+        uint32_t m_analog_max_number;
 };
 
 } //namespace Parsers

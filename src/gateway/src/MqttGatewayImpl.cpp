@@ -69,7 +69,8 @@ void CMqttGatewayImpl::performStart()
         }
 
         //---------------------start HW core <-> gateway------------
-        m_data_client = std::make_shared<CDataClientInterface>();
+        m_data_client = std::make_shared<CDataClientInterface>(m_gtw_table->getDigitalPointAmount(),
+                                                               m_gtw_table->getAnalogPointAmount());
         m_data_client->connToSigDigitalPointUpdate(boost::bind(&CMqttGatewayImpl::slotDigitalPointUpdate, this,_1, _2));
         m_data_client->connSigAnalogPointUpdate(boost::bind(&CMqttGatewayImpl::slotAnalogPointUpdate, this,_1, _2));
         m_data_client->connSigDataConnection(boost::bind(&CMqttGatewayImpl::slotDataConnectionUpdate, this,_1));
@@ -95,6 +96,11 @@ void CMqttGatewayImpl::performStop()
 {
     printDebug("CMqttGatewayImpl/%s: ->", __FUNCTION__);
 
+    if (m_data_client)
+    {
+       m_data_client->stopDataConnection();
+       m_data_client.reset();
+    }
 //    m_mqtt_handler->stopListening();
 //    m_mqtt_handler.reset();
 
@@ -138,6 +144,7 @@ void CMqttGatewayImpl::slotDigitalPointUpdate(uint32_t start_poit_num, uint32_t 
         if (status && value)
         {
             // brodcast to items
+            printDebug("CMqttGatewayImpl/%s: dpoint[%i](status/value) = %d/%i", __FUNCTION__, i, status.get(), value.get());
         }
     }
 }
@@ -153,6 +160,7 @@ void CMqttGatewayImpl::slotAnalogPointUpdate(uint32_t start_poit_num, uint32_t n
         if (status && value)
         {
             // brodcast to items
+           printDebug("CMqttGatewayImpl/%s: apoint[%i](status/value) = %d/%lf", __FUNCTION__, i, status.get(), value.get());
         }
     }
 }

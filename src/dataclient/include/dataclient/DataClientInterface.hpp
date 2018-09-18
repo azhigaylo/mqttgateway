@@ -13,8 +13,8 @@ class CDataClientInterface final
 {
     enum
     {
-        d_point_total = 1000,
-        a_point_total = 1000
+        d_point_total = 100,
+        a_point_total = 100
     };
 
     enum
@@ -92,7 +92,7 @@ class CDataClientInterface final
         {return m_sig_data_connection.connect(slot);}
 
     public:
-        explicit CDataClientInterface();
+        explicit CDataClientInterface(uint32_t d_amount, uint32_t a_amount);
         virtual ~CDataClientInterface();
 
         void startDataConnection(std::string host, int server_port);
@@ -107,9 +107,6 @@ class CDataClientInterface final
 
         bool setDPoint ( uint16_t number, uint16_t value );
         bool setAPoint ( uint16_t number, double value );
-
-        uint32_t getDPointAmount() const {return d_point_total;}
-        uint32_t getAPointAmount() const {return a_point_total;}
 
     private:
 
@@ -144,6 +141,8 @@ class CDataClientInterface final
         boost::asio::streambuf                         m_read_buffer;
 
         std::atomic_bool                               m_connection_state;
+        uint32_t                                       m_a_point_amount;
+        uint32_t                                       m_d_point_amount;
 
     private:
         SigDigitalPointUpdate  m_sig_digital_point_update;
