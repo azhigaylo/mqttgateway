@@ -30,10 +30,15 @@ class CMqttGatewayImpl final
         void performStop();
 
     protected:
+        // gtw item <-> gateway
         void slotTopicSubscribe(const std::string& topic_name);
         void slotTopicWrire(const std::string& topic_name, const std::string& topic_value);
         void slotDigitalPointSet(uint32_t poit_num, uint16_t point_value);
         void slotAnalogPointSet(uint32_t poit_num, const std::string& point_value);
+        // HW core <-> gateway
+        void slotDigitalPointUpdate(uint32_t start_poit_num, uint32_t number_point);
+        void slotAnalogPointUpdate(uint32_t start_poit_num, uint32_t number_point);
+        void slotDataConnectionUpdate(bool connection_status);
 
     private:
 

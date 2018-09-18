@@ -6,6 +6,9 @@
 #include <boost/asio/ip/tcp.hpp>
 #include <boost/thread/scoped_thread.hpp>
 
+#include <boost/signals2/signal.hpp>
+#include <boost/signals2/connection.hpp>
+
 class CDataClientInterface final
 {
     enum
@@ -76,10 +79,17 @@ class CDataClientInterface final
 
     #pragma pack(pop)
 
-    //signals:
-        void dpoint_updated(int /*strt_point*/, int /*amouint_point*/){}
-        void apoint_updated(int /*strt_point*/, int /*amouint_point*/){}
-        void dataConnection(bool /*success*/){}
+    public:
+        typedef boost::signals2::signal<void (uint32_t, uint32_t)> SigDigitalPointUpdate;
+        typedef boost::signals2::signal<void (uint32_t, uint32_t)> SigAnalogPointUpdate;
+        typedef boost::signals2::signal<void (bool)>SigDataConnection;
+
+        boost::signals2::connection connToSigDigitalPointUpdate(const SigDigitalPointUpdate::slot_type &slot)
+        {return m_sig_digital_point_update.connect(slot);}
+        boost::signals2::connection connSigAnalogPointUpdate(const SigAnalogPointUpdate::slot_type &slot)
+        {return m_sig_analog_point_update.connect(slot);}
+        boost::signals2::connection connSigDataConnection(const SigDataConnection::slot_type &slot)
+        {return m_sig_data_connection.connect(slot);}
 
     public:
         explicit CDataClientInterface();
@@ -134,4 +144,9 @@ class CDataClientInterface final
         boost::asio::streambuf                         m_read_buffer;
 
         std::atomic_bool                               m_connection_state;
+
+    private:
+        SigDigitalPointUpdate  m_sig_digital_point_update;
+        SigAnalogPointUpdate   m_sig_analog_point_update;
+        SigDataConnection      m_sig_data_connection;
 };

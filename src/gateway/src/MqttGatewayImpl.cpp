@@ -34,6 +34,7 @@ void CMqttGatewayImpl::performStart()
 
     try
     {
+        //---------------------start items <-> gateway------------
         // create gateway items
         CGtwItemFactory& mf = CGtwItemFactory::getModuleFactory();
         const std::vector<Parsers::CGtwTableParser::gwt_item_t>& gtw_table = m_gtw_table->getGwtTable();
@@ -67,9 +68,14 @@ void CMqttGatewayImpl::performStart()
             }
         }
 
-        // start HW core <-> gateway
+        //---------------------start HW core <-> gateway------------
         m_data_client = std::make_shared<CDataClientInterface>();
-        m_data_client->startDataConnection(std::string("127.0.0.1"), 8096);
+        m_data_client->connToSigDigitalPointUpdate(boost::bind(&CMqttGatewayImpl::slotDigitalPointUpdate, this,_1, _2));
+        m_data_client->connSigAnalogPointUpdate(boost::bind(&CMqttGatewayImpl::slotAnalogPointUpdate, this,_1, _2));
+        m_data_client->connSigDataConnection(boost::bind(&CMqttGatewayImpl::slotDataConnectionUpdate, this,_1));
+
+        m_data_client->startDataConnection(m_config->getDataIP(), m_config->getDataPort());
+
         //m_mqtt_handler->startListening(std::bind(&MqttGatewayImpl.hpp::publisher, this, std::placeholders::_1));
 
         // start core -> mqtt SW part
@@ -95,25 +101,65 @@ void CMqttGatewayImpl::performStop()
     printDebug("CMqttGatewayImpl/%s: <-", __FUNCTION__);
 }
 
+// gtw item <-> gateway
 void CMqttGatewayImpl::slotTopicSubscribe(const std::string& topic_name)
 {
-    //m_mqtt_handler->();
+    //m_mqtt_handler->subscribe(topic_name);
     printDebug("CMqttGatewayImpl/%s: need sub for topic '%s'", __FUNCTION__, topic_name.c_str());
 }
 
-void CMqttGatewayImpl::slotTopicWrire(const std::string& /*topic_name*/, const std::string& /*topic_value*/)
+// gtw item <-> gateway
+void CMqttGatewayImpl::slotTopicWrire(const std::string& topic_name, const std::string& topic_value)
+{
+    //m_mqtt_handler->write(topic_name, topic_value);
+    printDebug("CMqttGatewayImpl/%s: topic %s = '%s'", __FUNCTION__, topic_name.c_str(), topic_value.c_str());
+}
+
+// gtw item <-> gateway
+void CMqttGatewayImpl::slotDigitalPointSet(uint32_t poit_num, uint16_t point_value)
+{
+    m_data_client->setDPoint(poit_num, point_value);
+}
+
+// gtw item <-> gateway
+void CMqttGatewayImpl::slotAnalogPointSet(uint32_t poit_num, const std::string& point_value)
+{
+    m_data_client->setAPoint(poit_num, std::stod(point_value));
+}
+
+// HW core <-> gateway
+void CMqttGatewayImpl::slotDigitalPointUpdate(uint32_t start_poit_num, uint32_t number_point)
+{
+    for (uint32_t i=start_poit_num; i< start_poit_num+number_point; i++)
+    {
+        boost::optional<int8_t>  status = m_data_client->getDStatus(i);
+        boost::optional<uint16_t> value = m_data_client->getDPoint(i);
+
+        if (status && value)
+        {
+            // brodcast to items
+        }
+    }
+}
+
+// HW core <-> gateway
+void CMqttGatewayImpl::slotAnalogPointUpdate(uint32_t start_poit_num, uint32_t number_point)
+{
+    for (uint32_t i=start_poit_num; i< start_poit_num+number_point; i++)
+    {
+        boost::optional<int8_t>  status = m_data_client->getAStatus(i);
+        boost::optional<double>   value = m_data_client->getAPoint(i);
+
+        if (status && value)
+        {
+            // brodcast to items
+        }
+    }
+}
+
+// HW core <-> gateway
+void CMqttGatewayImpl::slotDataConnectionUpdate(bool /*connection_status*/)
 {
 
 }
-
-void CMqttGatewayImpl::slotDigitalPointSet(uint32_t /*poit_num*/, uint16_t /*point_value*/)
-{
-
-}
-
-void CMqttGatewayImpl::slotAnalogPointSet(uint32_t /*poit_num*/, const std::string& /*point_value*/)
-{
-
-}
-
 } // namespace MqttGateway

@@ -1,8 +1,14 @@
 {
+    "DataClientConfig": {
+        "data_ip": "nick.asdf.kiev.ua",
+        "data_port": 23500,
+        "data_username": "test",
+        "data_password": "qwerty"
+    }
     "MqttClientConfig": {
-        "broker": "nick.asdf.kiev.ua",
-        "broker_port": 23500,
-        "username": "test1",
-        "password": "123!@#"
+        "mqtt_broker": "nick.asdf.kiev.ua",
+        "mqtt_broker_port": 23500,
+        "mqtt_username": "test1",
+        "mqtt_password": "123!@#"
     }
 }

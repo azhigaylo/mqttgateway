@@ -210,7 +210,7 @@ void CDataClientInterface::processIncoming()
                          {
                             DPOINT[package.header.start_point + i] = package.array.digital[i];
                          }
-                         dpoint_updated(package.header.start_point, package.header.number_point);
+                         m_sig_digital_point_update(package.header.start_point, package.header.number_point);
                          break;
                       }
                       case GetAnalogPoint :
@@ -220,7 +220,7 @@ void CDataClientInterface::processIncoming()
                          {
                             APOINT[package.header.start_point + i] = package.array.analog[i];
                          }
-                         apoint_updated(package.header.start_point, package.header.number_point);
+                         m_sig_analog_point_update(package.header.start_point, package.header.number_point);
                          break;
                       }
                       case NotifyDiscretPoint :
@@ -230,7 +230,7 @@ void CDataClientInterface::processIncoming()
                          {
                             DPOINT[package.header.start_point + i] = package.array.digital[i];
                          }
-                         dpoint_updated(package.header.start_point, package.header.number_point);
+                         m_sig_digital_point_update(package.header.start_point, package.header.number_point);
                          break;
                       }
                       case NotifyAnalogPoint :
@@ -240,7 +240,7 @@ void CDataClientInterface::processIncoming()
                          {
                             APOINT[package.header.start_point + i] = package.array.analog[i];
                          }
-                         apoint_updated(package.header.start_point, package.header.number_point);
+                         m_sig_analog_point_update(package.header.start_point, package.header.number_point);
                          break;
                       }
                       default :
@@ -267,7 +267,7 @@ void CDataClientInterface::processIncoming()
 void CDataClientInterface::updateConnectionState(bool state)
 {
     m_connection_state = state;
-    dataConnection(m_connection_state);
+    m_sig_data_connection(m_connection_state);
 }
 
 void CDataClientInterface::sendGetDpointsReq(uint16_t start_point, uint16_t number_point)
