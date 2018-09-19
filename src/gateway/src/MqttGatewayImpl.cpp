@@ -52,6 +52,9 @@ void CMqttGatewayImpl::performStart()
                     d_item_ptr->connToSigTopicSubscribe(boost::bind(&CMqttGatewayImpl::slotTopicSubscribe, this,_1));
                     d_item_ptr->connToSigTopicWrire(boost::bind(&CMqttGatewayImpl::slotTopicWrire, this,_1, _2));
                     d_item_ptr->connSigDigitalPointSet(boost::bind(&CMqttGatewayImpl::slotDigitalPointSet, this,_1, _2));
+
+                    d_item_ptr->initItem(boost::bind(&CMqttGatewayImpl::connToSigDigitalPointUpdate, this,_1));
+                   // m_sig_digital_update.connect(d_item_ptr->slotDigitalPointUpdate);
                 }
                 // test for analog item
                 if (nullptr != dynamic_cast<Modules::CAnalogGtwItem*>(item_ptr.get().get()))
@@ -61,9 +64,10 @@ void CMqttGatewayImpl::performStart()
                     a_item_ptr->connToSigTopicSubscribe(boost::bind(&CMqttGatewayImpl::slotTopicSubscribe, this,_1));
                     a_item_ptr->connToSigTopicWrire(boost::bind(&CMqttGatewayImpl::slotTopicWrire, this,_1, _2));
                     a_item_ptr->connSigAnalogPointSet(boost::bind(&CMqttGatewayImpl::slotAnalogPointSet, this,_1, _2));
+
+                    a_item_ptr->initItem(boost::bind(&CMqttGatewayImpl::connToSigAnalogPointUpdate, this,_1));
                 }
 
-                item_ptr.get()->initItem();
                 m_gtw_items.push_back(std::move(item_ptr.get()));
             }
         }
@@ -133,7 +137,7 @@ void CMqttGatewayImpl::slotAnalogPointSet(uint32_t poit_num, const std::string& 
     m_data_client->setAPoint(poit_num, std::stod(point_value));
 }
 
-// HW core <-> gateway
+// data client <-> gateway
 void CMqttGatewayImpl::slotDigitalPointUpdate(uint32_t start_poit_num, uint32_t number_point)
 {
     for (uint32_t i=start_poit_num; i< start_poit_num+number_point; i++)
@@ -149,7 +153,7 @@ void CMqttGatewayImpl::slotDigitalPointUpdate(uint32_t start_poit_num, uint32_t 
     }
 }
 
-// HW core <-> gateway
+// data client <-> gateway
 void CMqttGatewayImpl::slotAnalogPointUpdate(uint32_t start_poit_num, uint32_t number_point)
 {
     for (uint32_t i=start_poit_num; i< start_poit_num+number_point; i++)
@@ -165,7 +169,7 @@ void CMqttGatewayImpl::slotAnalogPointUpdate(uint32_t start_poit_num, uint32_t n
     }
 }
 
-// HW core <-> gateway
+// data client <-> gateway
 void CMqttGatewayImpl::slotDataConnectionUpdate(bool /*connection_status*/)
 {
 

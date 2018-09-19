@@ -4,8 +4,11 @@
 
 #include <memory>
 
+#include <boost/bind.hpp>
 #include <boost/signals2/signal.hpp>
 #include <boost/signals2/connection.hpp>
+
+#include "gateway/MqttGatewayImpl.hpp"
 
 namespace Modules
 {
@@ -16,10 +19,7 @@ class CDigitalGtwItem final : public IGtwItemBase
         typedef boost::signals2::signal<void (const std::string &, const std::string )> SigTopicWrire;
         typedef boost::signals2::signal<void (uint32_t, uint16_t)>  SigDigitalPointSet;
 
-        CDigitalGtwItem(const Parsers::CGtwTableParser::router_item_t& data);
-        virtual ~CDigitalGtwItem() override;
-
-        void initItem() override;
+        typedef std::function<boost::signals2::connection(const MqttGateway::CMqttGatewayImpl::SigDigitalPointUpdate::slot_type &slot)> TDigitalUpdateConnFunc;
 
         boost::signals2::connection connToSigTopicSubscribe(const SigTopicSubscribe::slot_type &slot)
         {return m_sig_topic_subscribe.connect(slot);}
@@ -28,14 +28,25 @@ class CDigitalGtwItem final : public IGtwItemBase
         boost::signals2::connection connSigDigitalPointSet(const SigDigitalPointSet::slot_type &slot)
         {return m_sig_dig_poit_set.connect(slot);}
 
+    public:
+        CDigitalGtwItem(const Parsers::CGtwTableParser::router_item_t& data);
+        virtual ~CDigitalGtwItem() override;
+
+        void initItem(TDigitalUpdateConnFunc conn_funk);
+
     protected:
         CDigitalGtwItem(const CDigitalGtwItem&) = delete;
         CDigitalGtwItem& operator=(const CDigitalGtwItem&) = delete;
+
+        // gateway <-> gtw item
+        void slotDigitalPointUpdate(uint32_t poit_num, uint8_t status, uint16_t value);
 
     private:
         SigTopicSubscribe  m_sig_topic_subscribe;
         SigTopicWrire      m_sig_topic_write;
         SigDigitalPointSet m_sig_dig_poit_set;
+
+        boost::signals2::connection m_conn_to_dpoint_update;
 };
 } //namespase Modules
 

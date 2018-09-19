@@ -20,15 +20,24 @@ CAnalogGtwItem::CAnalogGtwItem(const Parsers::CGtwTableParser::router_item_t& da
 
 CAnalogGtwItem::~CAnalogGtwItem()
 {
+    m_conn_to_apoint_update.disconnect();
+
     printDebug("CAnalogGtwItem/%s: was deleted", __FUNCTION__);
 }
 
-void CAnalogGtwItem::initItem()
+void CAnalogGtwItem::initItem(TAnalogUpdateConnFunc conn_funk)
 {
+    m_conn_to_apoint_update = conn_funk(boost::bind(&CAnalogGtwItem::slotAnalogPointUpdate, this,_1, _2, _3));
+
     if (true == m_router_item.topic_sub)
     {
        m_sig_topic_subscribe(m_router_item.mqtt_topic);
     }
+}
+
+void CAnalogGtwItem::slotAnalogPointUpdate(uint32_t /*poit_num*/, uint8_t /*status*/, double /*value*/)
+{
+
 }
 
 } //namespase Modules
