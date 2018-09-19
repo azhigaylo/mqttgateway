@@ -35,9 +35,12 @@ void CDigitalGtwItem::initItem(TDigitalUpdateConnFunc conn_funk)
    }
 }
 
-void CDigitalGtwItem::slotDigitalPointUpdate(uint32_t /*poit_num*/, uint8_t /*status*/, uint16_t /*value*/)
+void CDigitalGtwItem::slotDigitalPointUpdate(uint32_t poit_num, uint8_t /*status*/, uint16_t /*value*/)
 {
-
+   if (poit_num == m_router_item.number)
+   {
+      printDebug("CDigitalGtwItem/%s: I'm digital item[%i], and it's mine !!!", __FUNCTION__, m_router_item.number);
+   }
 }
 
 } //namespase Modules

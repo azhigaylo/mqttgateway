@@ -148,6 +148,7 @@ void CMqttGatewayImpl::slotDigitalPointUpdate(uint32_t start_poit_num, uint32_t 
         if (status && value)
         {
             // brodcast to items
+            m_sig_digital_update(i, status.get(), value.get());
             printDebug("CMqttGatewayImpl/%s: dpoint[%i](status/value) = %d/%i", __FUNCTION__, i, status.get(), value.get());
         }
     }
@@ -163,7 +164,8 @@ void CMqttGatewayImpl::slotAnalogPointUpdate(uint32_t start_poit_num, uint32_t n
 
         if (status && value)
         {
-            // brodcast to items
+           m_sig_analog_update(start_poit_num, status.get(), value.get());
+           // brodcast to items
            printDebug("CMqttGatewayImpl/%s: apoint[%i](status/value) = %d/%lf", __FUNCTION__, i, status.get(), value.get());
         }
     }

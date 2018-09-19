@@ -148,6 +148,22 @@
            ]
         },
         {
+           "dpoint_number" : 36,
+           "mqtt_topic"    : "home/status/light/hallway",
+           "mqtt_subscribe" : false,
+           "value_mapping" :
+           [
+               {
+                   "value"   : 0,
+                   "mapp_to" : "off"
+               },
+               {
+                   "value"   : 1,
+                   "mapp_to" : "on"
+               }
+           ]
+        },
+        {
            "dpoint_number" : 95,
            "mqtt_topic"    : "home/control/alarm/hallway",
            "mqtt_subscribe" : true,
