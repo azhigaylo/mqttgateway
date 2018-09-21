@@ -35,9 +35,12 @@ void CAnalogGtwItem::initItem(TAnalogUpdateConnFunc conn_funk)
     }
 }
 
-void CAnalogGtwItem::slotAnalogPointUpdate(uint32_t /*poit_num*/, uint8_t /*status*/, double /*value*/)
+void CAnalogGtwItem::slotAnalogPointUpdate(uint32_t poit_num, uint8_t /*status*/, double /*value*/)
 {
-
+   if (poit_num == m_router_item.number)
+   {
+      printDebug("CAnalogGtwItem/%s: I'm analog item[%i], and it's mine !!!", __FUNCTION__, m_router_item.number);
+   }
 }
 
 } //namespase Modules
