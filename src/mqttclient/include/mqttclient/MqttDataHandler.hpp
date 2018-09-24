@@ -6,7 +6,6 @@
 #include <boost/function.hpp>
 
 #include <mosquittopp.h>
-#include "gateway/ConfigParser.hpp"
 
 namespace CapiMqtt
 {
@@ -19,10 +18,12 @@ class CMqttDataHandler : public mosqpp::mosquittopp
         explicit CMqttDataHandler(const std::shared_ptr<CConfigParser> config);
         virtual ~CMqttDataHandler();
 
-        void startListening(TSendBuildingsInfoFunc processor);
-        void stopListening();
+        void startDataConnection(std::string host, int server_port);
+        void stopDataConnection();
 
-        void sendMessage(const std::string& msg);
+        void setTopic(const std::string& topic, const std::string& msg);
+        void subscribeTopic(const std::string& topic);
+        void updateTopicEvent(const std::string& topic, const std::string& msg);
 
     private:
         void on_connect(int rc) override;
