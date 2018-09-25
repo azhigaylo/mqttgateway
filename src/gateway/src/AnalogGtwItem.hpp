@@ -1,13 +1,12 @@
 #pragma once
 
-#include "gateway/GtwItemBase.hpp"
-
 #include <memory>
 
 #include <boost/function.hpp>
 #include <boost/signals2/signal.hpp>
 #include <boost/signals2/connection.hpp>
 
+#include "gateway/GtwItemBase.hpp"
 #include "gateway/MqttGatewayImpl.hpp"
 
 namespace Modules
@@ -32,7 +31,7 @@ class CAnalogGtwItem final : public IGtwItemBase
         CAnalogGtwItem(const Parsers::CGtwTableParser::router_item_t& data);
         virtual ~CAnalogGtwItem() override;
 
-        void initItem(TAnalogUpdateConnFunc conn_funk);
+        void initItem(MqttGateway::CMqttGatewayImpl& gtw);
 
     protected:
         CAnalogGtwItem(const CAnalogGtwItem&) = delete;
@@ -40,13 +39,15 @@ class CAnalogGtwItem final : public IGtwItemBase
 
         // gateway <-> gtw item
         void slotAnalogPointUpdate(uint32_t start_poit_num, uint8_t status, double value);
+        void slotTopicUpdate(const std::string& topic_name, const std::string& topic_value) override;
 
     private:
         SigTopicSubscribe  m_sig_topic_subscribe;
         SigTopicWrire      m_sig_topic_write;
         SigAnalogPointSet  m_sig_analog_poit_set;
 
-        boost::signals2::connection m_conn_to_apoint_update;
+        boost::signals2::connection m_conn_to_apoint_update;   //connection to analog point update signal from gateway
+        boost::signals2::connection m_conn_to_topic_update;    //connection to topic update signal from gateway
 };
 } //namespase Modules
 

@@ -25,9 +25,10 @@ CAnalogGtwItem::~CAnalogGtwItem()
     printDebug("CAnalogGtwItem/%s: was deleted", __FUNCTION__);
 }
 
-void CAnalogGtwItem::initItem(TAnalogUpdateConnFunc conn_funk)
+void CAnalogGtwItem::initItem(MqttGateway::CMqttGatewayImpl& gtw)
 {
-    m_conn_to_apoint_update = conn_funk(boost::bind(&CAnalogGtwItem::slotAnalogPointUpdate, this,_1, _2, _3));
+    m_conn_to_apoint_update = gtw.connToSigDigitalPointUpdate(boost::bind(&CAnalogGtwItem::slotAnalogPointUpdate, this,_1, _2, _3));
+    m_conn_to_topic_update  = gtw.connToSigTopicUpdate(boost::bind(&CAnalogGtwItem::slotTopicUpdate, this,_1, _2));
 
     if (true == m_router_item.topic_sub)
     {
@@ -40,6 +41,14 @@ void CAnalogGtwItem::slotAnalogPointUpdate(uint32_t poit_num, uint8_t /*status*/
    if (poit_num == m_router_item.number)
    {
       printDebug("CAnalogGtwItem/%s: I'm analog item[%i], and it's mine !!!", __FUNCTION__, m_router_item.number);
+   }
+}
+
+void CAnalogGtwItem::slotTopicUpdate(const std::string& topic_name, const std::string& /*topic_value*/)
+{
+   if (topic_name == m_router_item.mqtt_topic)
+   {
+      printDebug("CDigitalGtwItem/%s: I'm analog item[%i], and it's my topic !!!", __FUNCTION__, m_router_item.number);
    }
 }
 

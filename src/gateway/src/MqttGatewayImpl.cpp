@@ -52,9 +52,7 @@ void CMqttGatewayImpl::performStart()
                     d_item_ptr->connToSigTopicSubscribe(boost::bind(&CMqttGatewayImpl::slotTopicSubscribe, this,_1));
                     d_item_ptr->connToSigTopicWrire(boost::bind(&CMqttGatewayImpl::slotTopicWrire, this,_1, _2));
                     d_item_ptr->connSigDigitalPointSet(boost::bind(&CMqttGatewayImpl::slotDigitalPointSet, this,_1, _2));
-
-                    d_item_ptr->initItem(boost::bind(&CMqttGatewayImpl::connToSigDigitalPointUpdate, this,_1));
-                   // m_sig_digital_update.connect(d_item_ptr->slotDigitalPointUpdate);
+                    d_item_ptr->initItem(*this);
                 }
                 // test for analog item
                 if (nullptr != dynamic_cast<Modules::CAnalogGtwItem*>(item_ptr.get().get()))
@@ -64,8 +62,7 @@ void CMqttGatewayImpl::performStart()
                     a_item_ptr->connToSigTopicSubscribe(boost::bind(&CMqttGatewayImpl::slotTopicSubscribe, this,_1));
                     a_item_ptr->connToSigTopicWrire(boost::bind(&CMqttGatewayImpl::slotTopicWrire, this,_1, _2));
                     a_item_ptr->connSigAnalogPointSet(boost::bind(&CMqttGatewayImpl::slotAnalogPointSet, this,_1, _2));
-
-                    a_item_ptr->initItem(boost::bind(&CMqttGatewayImpl::connToSigAnalogPointUpdate, this,_1));
+                    a_item_ptr->initItem(*this);
                 }
 
                 m_gtw_items.push_back(std::move(item_ptr.get()));
@@ -176,4 +173,17 @@ void CMqttGatewayImpl::slotDataConnectionUpdate(bool /*connection_status*/)
 {
 
 }
+
+// mqtt client <-> gateway
+void CMqttGatewayImpl::slotTopicUpdate(const std::string& /*topic_name*/, const std::string& /*topic_value*/)
+{
+
+}
+
+// mqtt client <-> gateway
+void CMqttGatewayImpl::slotMqttConnectionUpdate(bool /*connection_status*/)
+{
+
+}
+
 } // namespace MqttGateway

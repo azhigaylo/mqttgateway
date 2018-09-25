@@ -5,13 +5,12 @@
 
 #include <boost/function.hpp>
 
-#include <mosquitto.h>
 #include <mosquittopp.h>
 
 namespace Mqtt
 {
 
-class CMqttClientInterface : public mosq::mosquittopp
+class CMqttClientInterface : public mosqpp::mosquittopp
 {
     public:
 

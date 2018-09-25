@@ -5,20 +5,20 @@
 find_package(PkgConfig QUIET)
 
 if (PkgConfig_FOUND)
-    pkg_check_modules(_MOSQUITTO mosquitto QUIET)
+    pkg_check_modules(_MOSQUITTO mosquittopp QUIET)
 
-    find_path(mosquitto_INCLUDE_DIR
-        mosquitto.h
+    find_path(mosquittopp_INCLUDE_DIR
+        mosquittopp.h
         ${_MOSQUITTO_INCLUDE_DIR}
         )
 
-    find_library(mosquitto_LIBRARY
-        NAMES libmosquitto mosquitto
-        PATHS ${_MOSQUITTO_LIBRARY_DIRS}
+    find_library(mosquittopp_LIBRARY
+        NAMES mosquittopp
+        PATHS ${_MOSQUITTO__LIBRARIES}
         )
 
-    message("mosquitto LIBRARY = ${mosquitto_LIBRARY}")
-    message("mosquitto INCLUDE_DIR =  ${mosquitto_INCLUDE_DIR}")
+    message("mosquitto c++ LIBRARY = ${mosquittopp_LIBRARY}")
+    message("mosquitto c++ INCLUDE_DIR =  ${mosquittopp_INCLUDE_DIR}")
 
 else(PkgConfig_FOUND)
     if (_MOSQUITTO_FIND_REQUIRED)
@@ -30,10 +30,10 @@ include(FindPackageHandleStandardArgs)
 
 find_package_handle_standard_args(mosquitto
     FOUND_VAR mosquitto_FOUND
-    REQUIRED_VARS mosquitto_INCLUDE_DIR mosquitto_LIBRARY
+    REQUIRED_VARS mosquittopp_INCLUDE_DIR mosquittopp_LIBRARY
     )
 
 mark_as_advanced(
-    mosquitto_INCLUDE_DIR
-    mosquitto_LIBRARY
+    mosquittopp_INCLUDE_DIR
+    mosquittopp_LIBRARY
     )

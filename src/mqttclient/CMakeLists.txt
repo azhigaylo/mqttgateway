@@ -12,7 +12,7 @@ else()
     message(FATAL_ERROR "Boost NOT FOUND")
 endif()
 
-find_package(mosquitto REQUIRED)
+find_package(mosquittopp REQUIRED)
 
 if (mosquitto_FOUND)
     message(STATUS "Mosquitto found")
@@ -29,7 +29,8 @@ target_include_directories(${PROJECT_NAME}
     )
 
 target_link_libraries(${PROJECT_NAME}
+    common
     Boost::boost
     Boost::thread
-    ${mosquitto_LIBRARY}
+    ${mosquittopp_LIBRARY}
     )

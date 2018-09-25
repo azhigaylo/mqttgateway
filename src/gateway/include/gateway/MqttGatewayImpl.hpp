@@ -9,10 +9,10 @@
 #include <boost/thread/scoped_thread.hpp>
 
 #include "GtwItemBase.hpp"
-//#include "MqttDataHandler.hpp"
 #include "parsers/ConfigParser.hpp"
 #include "parsers/GtwTableParser.hpp"
 #include "dataclient/DataClientInterface.hpp"
+#include "mqttclient/MqttClientInterface.hpp"
 
 namespace MqttGateway
 {
@@ -24,11 +24,14 @@ class CMqttGatewayImpl final
     public:
         typedef boost::signals2::signal<void (uint32_t, uint8_t, uint16_t)> SigDigitalPointUpdate;
         typedef boost::signals2::signal<void (uint32_t, uint8_t, double)> SigAnalogPointUpdate;
+        typedef boost::signals2::signal<void (const std::string& topic_name, const std::string& topic_value)> SigTopicUpdate;
 
         boost::signals2::connection connToSigDigitalPointUpdate(const SigDigitalPointUpdate::slot_type &slot)
         {return m_sig_digital_update.connect(slot);}
         boost::signals2::connection connToSigAnalogPointUpdate(const SigAnalogPointUpdate::slot_type &slot)
         {return m_sig_analog_update.connect(slot);}
+        boost::signals2::connection connToSigTopicUpdate(const SigTopicUpdate::slot_type &slot)
+        {return m_sig_topic_update.connect(slot);}
 
         explicit CMqttGatewayImpl(const std::shared_ptr<Parsers::CConfigParser>   config,
                                   const std::shared_ptr<Parsers::CGtwTableParser> gtw_table);
@@ -47,6 +50,9 @@ class CMqttGatewayImpl final
         void slotDigitalPointUpdate(uint32_t start_poit_num, uint32_t number_point);
         void slotAnalogPointUpdate(uint32_t start_poit_num, uint32_t number_point);
         void slotDataConnectionUpdate(bool connection_status);
+        // mqtt client <-> gateway
+        void slotTopicUpdate(const std::string& topic_name, const std::string& topic_value);
+        void slotMqttConnectionUpdate(bool connection_status);
 
     private:
 
@@ -58,6 +64,8 @@ class CMqttGatewayImpl final
 
         SigDigitalPointUpdate m_sig_digital_update;
         SigAnalogPointUpdate  m_sig_analog_update;
+        SigTopicUpdate        m_sig_topic_update;
+
 };
 
 // ------------------------------------------------------------------------------------------------

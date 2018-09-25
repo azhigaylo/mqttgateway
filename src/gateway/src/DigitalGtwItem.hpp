@@ -1,13 +1,12 @@
 #pragma once
 
-#include "gateway/GtwItemBase.hpp"
-
 #include <memory>
 
 #include <boost/bind.hpp>
 #include <boost/signals2/signal.hpp>
 #include <boost/signals2/connection.hpp>
 
+#include "gateway/GtwItemBase.hpp"
 #include "gateway/MqttGatewayImpl.hpp"
 
 namespace Modules
@@ -32,7 +31,7 @@ class CDigitalGtwItem final : public IGtwItemBase
         CDigitalGtwItem(const Parsers::CGtwTableParser::router_item_t& data);
         virtual ~CDigitalGtwItem() override;
 
-        void initItem(TDigitalUpdateConnFunc conn_funk);
+        void initItem(MqttGateway::CMqttGatewayImpl& gtw);
 
     protected:
         CDigitalGtwItem(const CDigitalGtwItem&) = delete;
@@ -40,13 +39,15 @@ class CDigitalGtwItem final : public IGtwItemBase
 
         // gateway <-> gtw item
         void slotDigitalPointUpdate(uint32_t poit_num, uint8_t status, uint16_t value);
+        void slotTopicUpdate(const std::string& topic_name, const std::string& topic_value) override;
 
     private:
         SigTopicSubscribe  m_sig_topic_subscribe;
         SigTopicWrire      m_sig_topic_write;
         SigDigitalPointSet m_sig_dig_poit_set;
 
-        boost::signals2::connection m_conn_to_dpoint_update;
+        boost::signals2::connection m_conn_to_dpoint_update;   //connection to digital point update signal from gateway
+        boost::signals2::connection m_conn_to_topic_update;    //connection to topic update signal from gateway
 };
 } //namespase Modules
 
