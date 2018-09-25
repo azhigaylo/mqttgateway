@@ -14,6 +14,12 @@ class IGtwItemBase
         explicit IGtwItemBase(const Parsers::CGtwTableParser::router_item_t& item) : m_router_item(item){}
         virtual void slotTopicUpdate(const std::string& topic_name, const std::string& topic_value) = 0;
 
+        enum PointStatus
+        {
+            unknown      = 0,
+            reliable     = 1
+        };
+
         Parsers::CGtwTableParser::router_item_t m_router_item;
 };
 } //namespase Modules

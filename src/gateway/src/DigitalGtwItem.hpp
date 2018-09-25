@@ -9,6 +9,15 @@
 #include "gateway/GtwItemBase.hpp"
 #include "gateway/MqttGatewayImpl.hpp"
 
+//---------points status----------
+#define STATUS_UNKNOWN           0  // "UNKNOWN" - link with host - error
+#define STATUS_RELIABLE          1  // "OK"
+#define STATUS_ALARM             2  // "ALARM"
+#define STATUS_BEFORE_CRASH      4  // "BEFORE CRASH"
+#define STATUS_CRASH             8  // "CRASH"
+#define STATUS_SETNEW            16 // set new value of point
+#define STATUS_PROCESSED         32 // processed of new value of point flag
+
 namespace Modules
 {
 class CDigitalGtwItem final : public IGtwItemBase

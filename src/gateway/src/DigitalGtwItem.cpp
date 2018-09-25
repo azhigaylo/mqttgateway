@@ -32,23 +32,50 @@ void CDigitalGtwItem::initItem(MqttGateway::CMqttGatewayImpl& p_gtw)
 
     if (true == m_router_item.topic_sub)
     {
-       m_sig_topic_subscribe(m_router_item.mqtt_topic);
+        m_sig_topic_subscribe(m_router_item.mqtt_topic);
     }
 }
 
-void CDigitalGtwItem::slotDigitalPointUpdate(uint32_t poit_num, uint8_t /*status*/, uint16_t /*value*/)
+void CDigitalGtwItem::slotDigitalPointUpdate(uint32_t poit_num, uint8_t status, uint16_t value)
 {
    if (poit_num == m_router_item.number)
    {
-      printDebug("CDigitalGtwItem/%s: I'm digital item[%i], and it's mine !!!", __FUNCTION__, m_router_item.number);
+        printDebug("CDigitalGtwItem/%s: I'm digital item[%i], and it's mine !!!", __FUNCTION__, m_router_item.number);
+
+        std::string new_val("not_defined");
+        if (PointStatus::unknown != status)
+        {
+            for(Parsers::CGtwTableParser::router_item_t::mapp_item_t &map_item: m_router_item.mapping)
+            {
+                if (map_item.first == value)
+                {
+                    new_val = map_item.second;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            new_val = "unknown";
+        }
+        m_sig_topic_write(m_router_item.mqtt_topic, new_val);
    }
 }
 
-void CDigitalGtwItem::slotTopicUpdate(const std::string& topic_name, const std::string& /*topic_value*/)
+void CDigitalGtwItem::slotTopicUpdate(const std::string& topic_name, const std::string& topic_value)
 {
-   if (topic_name == m_router_item.mqtt_topic)
-   {
-      printDebug("CDigitalGtwItem/%s: I'm digital item[%i], and it's my topic !!!", __FUNCTION__, m_router_item.number);
+    if (topic_name == m_router_item.mqtt_topic)
+    {
+        printDebug("CDigitalGtwItem/%s: I'm digital item[%i], and it's my topic !!!", __FUNCTION__, m_router_item.number);
+
+        for(Parsers::CGtwTableParser::router_item_t::mapp_item_t &map_item: m_router_item.mapping)
+        {
+            if (map_item.second == topic_value)
+            {
+                m_sig_dig_poit_set(m_router_item.number, map_item.first);
+                break;
+            }
+        }
    }
 }
 

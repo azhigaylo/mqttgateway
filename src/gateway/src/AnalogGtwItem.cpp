@@ -36,19 +36,28 @@ void CAnalogGtwItem::initItem(MqttGateway::CMqttGatewayImpl& gtw)
     }
 }
 
-void CAnalogGtwItem::slotAnalogPointUpdate(uint32_t poit_num, uint8_t /*status*/, double /*value*/)
+void CAnalogGtwItem::slotAnalogPointUpdate(uint32_t poit_num, uint8_t status, double value)
 {
    if (poit_num == m_router_item.number)
    {
-      printDebug("CAnalogGtwItem/%s: I'm analog item[%i], and it's mine !!!", __FUNCTION__, m_router_item.number);
+        printDebug("CAnalogGtwItem/%s: I'm analog item[%i], and it's mine !!!", __FUNCTION__, m_router_item.number);
+
+        std::string new_val("unknown");
+        if (PointStatus::unknown != status)
+        {
+            new_val = std::to_string(value);
+        }
+        m_sig_topic_write(m_router_item.mqtt_topic, new_val);
    }
 }
 
-void CAnalogGtwItem::slotTopicUpdate(const std::string& topic_name, const std::string& /*topic_value*/)
+void CAnalogGtwItem::slotTopicUpdate(const std::string& topic_name, const std::string& topic_value)
 {
    if (topic_name == m_router_item.mqtt_topic)
    {
       printDebug("CDigitalGtwItem/%s: I'm analog item[%i], and it's my topic !!!", __FUNCTION__, m_router_item.number);
+
+      m_sig_analog_poit_set(m_router_item.number, topic_value);
    }
 }
 
