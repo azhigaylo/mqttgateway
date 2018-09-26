@@ -2,12 +2,12 @@
     "DataClientConfig": {
         "data_ip": "127.0.0.1",
         "data_port": 8096,
-        "data_username": "test",
-        "data_password": "qwerty"
+        "data_username": "",
+        "data_password": ""
     },
     "MqttClientConfig": {
-        "mqtt_broker": "nick.asdf.kiev.ua",
-        "mqtt_broker_port": 23500,
+        "mqtt_broker": "127.0.0.1",
+        "mqtt_broker_port": 8097,
         "mqtt_username": "test1",
         "mqtt_password": "123!@#"
     }

@@ -10,76 +10,98 @@ namespace Mqtt
 
 CMqttClientInterface::CMqttClientInterface()
     : mosquittopp("mqtt.client")
+    , m_connection_state(false)
 {
-    printDebug("MqttGateway/%s: created", __FUNCTION__);
+    printDebug("CMqttClientInterface/%s: created", __FUNCTION__);
 
 }
 
 CMqttClientInterface::~CMqttClientInterface()
 {
-    printDebug("MqttGateway/%s  was deleted", __FUNCTION__);
+    printDebug("CMqttClientInterface/%s  was deleted", __FUNCTION__);
 }
 
-void CMqttClientInterface::startMqttConnection(std::string host, int server_port)
+void CMqttClientInterface::startMqttConnection(const std::string& host, int server_port, const std::string& user, const std::string& pwd)
 {
-    printDebug("MqttGateway/%s: starting...", __FUNCTION__);
+    printDebug("CMqttClientInterface/%s: starting...", __FUNCTION__);
 
     // start mosquitto internal loop
     mosqpp::lib_init();
     loop_start();
 
+    // set credentials
+    if (!user.empty() && !pwd.empty())
+    {
+        username_pw_set(user.c_str(), pwd.c_str());
+    }
+
+    // connect to mqtt
     connect(host.c_str(), server_port, 120);
 
-    printDebug("MqttGateway/%s: started", __FUNCTION__);
+    printDebug("CMqttClientInterface/%s: started", __FUNCTION__);
 }
 
 void CMqttClientInterface::stopMqttConnection()
 {
-    printDebug("MqttGateway/%s: stopping...", __FUNCTION__);
+    printDebug("CMqttClientInterface/%s: stopping...", __FUNCTION__);
 
     // stop mosquitto internal loop
     loop_stop(true);
     mosqpp::lib_cleanup();
 
-    printDebug("MqttGateway/%s: stopped", __FUNCTION__);
+    printDebug("CMqttClientInterface/%s: stopped", __FUNCTION__);
 }
 
 void CMqttClientInterface::setTopic(const std::string& topic, const std::string& msg)
 {
-    printDebug("MqttGateway/%s: send msg: %s", __FUNCTION__, msg.c_str());
+    printDebug("CMqttClientInterface/%s: send msg: '%s' to topic: %s ", __FUNCTION__, msg.c_str(), topic.c_str());
 
     publish(NULL, topic.c_str(), static_cast<int>(msg.size()), static_cast<const void*>(msg.c_str()));
 }
+
+void CMqttClientInterface::subscribeTopic(const std::string& topic)
+{
+    printDebug("CMqttClientInterface/%s: subscribe on topic: %s", __FUNCTION__, topic.c_str());
+
+    subscribe(NULL, topic.c_str());
+}
+
 
 void CMqttClientInterface::on_connect(int rc)
 {
     if (0 == rc)
     {
-        printDebug("MqttGateway/%s:connected to mqtt broker", __FUNCTION__);
+        printDebug("CMqttClientInterface/%s:connected to mqtt broker", __FUNCTION__);
+        m_connection_state = true;
+        m_sig_mqtt_connection(true);
     }
     else
     {
-        printWarning("MqttGateway/%s:connection error to mqtt broker", __FUNCTION__);
+        printWarning("CMqttClientInterface/%s:connection error to mqtt broker", __FUNCTION__);
+        m_connection_state = false;
+        m_sig_mqtt_connection(false);
     }
 }
 
 void CMqttClientInterface::on_disconnect(int /*rc*/)
 {
-    stopMqttConnection();
+    printWarning("CMqttClientInterface/%s: lost communication with mqtt brocker", __FUNCTION__);
 
-    throw std::runtime_error(std::string("mqtt brocker disconnected, exit"));
-}
-
-void CMqttClientInterface::on_message(const struct mosquitto_message* /*message*/)
-{
-    // m_processor(std::string((char*)message->payload));
+    m_connection_state = false;
+    m_sig_mqtt_connection(false);
 }
 
 void CMqttClientInterface::on_error()
 {
-    stopMqttConnection();
+    printWarning("CMqttClientInterface/%s: lost communication with mqtt brocker", __FUNCTION__);
 
-    throw std::runtime_error(std::string("mqtt broker disconnected, exit"));
+    m_connection_state = false;
+    m_sig_mqtt_connection(false);
+}
+
+void CMqttClientInterface::on_message(const struct mosquitto_message* message)
+{
+    m_sig_topic_update(std::string((char*)message->topic), std::string((char*)message->payload));
 }
 
 } //namespase CapiMqtt

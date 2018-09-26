@@ -144,6 +144,7 @@ void CDataClientInterface::connectionHandler(const boost::system::error_code& er
     else
     {
        printError("CDataClientInterface/%s: error(%i), message: %s", __FUNCTION__, error.value(), error.message().c_str());
+       updateConnectionState(false);
     }
 }
 

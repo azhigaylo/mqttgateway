@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <atomic>
 #include <memory>
 #include <future>
 #include <boost/thread.hpp>
@@ -56,11 +57,18 @@ class CMqttGatewayImpl final
 
     private:
 
-        std::shared_ptr<Parsers::CConfigParser>   m_config;
-        std::shared_ptr<Parsers::CGtwTableParser> m_gtw_table;
-        std::shared_ptr<CDataClientInterface>     m_data_client;
+        enum timeout{mqtt_timeout_s = 5, data_timeout_s = 5};
+
+        std::shared_ptr<Parsers::CConfigParser>    m_config;
+        std::shared_ptr<Parsers::CGtwTableParser>  m_gtw_table;
+        std::shared_ptr<CDataClientInterface>      m_data_client;
+        std::shared_ptr<Mqtt::CMqttClientInterface>m_mqtt_client;
+
+        std::unique_ptr<boost::scoped_thread<>>    m_mqtt_reconn_thread;
+        std::unique_ptr<boost::scoped_thread<>>    m_data_reconn_thread;
 
         std::vector<TGtwItemPtr> m_gtw_items;
+        std::atomic_bool         m_stop_flag;
 
         SigDigitalPointUpdate m_sig_digital_update;
         SigAnalogPointUpdate  m_sig_analog_update;
