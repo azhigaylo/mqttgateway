@@ -53,7 +53,7 @@ void CAnalogGtwItem::slotAnalogPointUpdate(uint32_t poit_num, uint8_t status, do
 
 void CAnalogGtwItem::slotTopicUpdate(const std::string& topic_name, const std::string& topic_value)
 {
-   if (topic_name == m_router_item.mqtt_topic)
+   if (topic_name == m_router_item.mqtt_topic && "unknown" != topic_value)
    {
       printDebug("CDigitalGtwItem/%s: I'm analog item[%i], and it's my topic !!!", __FUNCTION__, m_router_item.number);
 
