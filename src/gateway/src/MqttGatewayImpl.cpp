@@ -178,11 +178,12 @@ void CMqttGatewayImpl::slotDataConnectionUpdate(bool connection_status)
 
 //----------------------mqtt client <-> gateway slots---------------------------------------------------------------------------------------
 
-
 // mqtt client <-> gateway
-void CMqttGatewayImpl::slotTopicUpdate(const std::string& /*topic_name*/, const std::string& /*topic_value*/)
+void CMqttGatewayImpl::slotTopicUpdate(const std::string& topic_name, const std::string& topic_value)
 {
-
+    printDebug("CMqttGatewayImpl/%s: got topic %s update, msg: '%s'", __FUNCTION__, topic_name.c_str(), topic_value.c_str());
+    // brodcast to items
+    m_sig_topic_update(topic_name, topic_value);
 }
 
 // mqtt client <-> gateway
@@ -233,25 +234,36 @@ void CMqttGatewayImpl::slotMqttConnectionUpdate(bool connection_status)
 // gtw item <-> gateway
 void CMqttGatewayImpl::slotTopicSubscribe(const std::string& topic_name)
 {
+    printDebug("CMqttGatewayImpl/%s: subscribe on topic[%s]", __FUNCTION__, topic_name.c_str());
     m_mqtt_client->subscribeTopic(topic_name);
 }
 
 // gtw item <-> gateway
 void CMqttGatewayImpl::slotTopicWrire(const std::string& topic_name, const std::string& topic_value)
 {
+    printDebug("CMqttGatewayImpl/%s: set topic[%s] = %s", __FUNCTION__, topic_name.c_str(), topic_value.c_str());
     m_mqtt_client->setTopic(topic_name, topic_value);
 }
 
 // gtw item <-> gateway
 void CMqttGatewayImpl::slotDigitalPointSet(uint32_t poit_num, uint16_t point_value)
 {
+    printDebug("CMqttGatewayImpl/%s: set dpoint[%i] = %i", __FUNCTION__, poit_num, point_value);
     m_data_client->setDPoint(poit_num, point_value);
 }
 
 // gtw item <-> gateway
 void CMqttGatewayImpl::slotAnalogPointSet(uint32_t poit_num, const std::string& point_value)
 {
-    m_data_client->setAPoint(poit_num, std::stod(point_value));
+    try
+    {
+        printDebug("CMqttGatewayImpl/%s: set apoint[%i] = %s", __FUNCTION__, poit_num, point_value.c_str());
+        m_data_client->setAPoint(poit_num, std::stod(point_value));
+    }
+    catch (const std::exception& e)
+    {
+        printError("CConfigParser/%s: Error description: %s", __FUNCTION__, e.what());
+    }
 }
 
 

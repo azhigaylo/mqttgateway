@@ -64,9 +64,9 @@ void CDigitalGtwItem::slotDigitalPointUpdate(uint32_t poit_num, uint8_t status, 
 
 void CDigitalGtwItem::slotTopicUpdate(const std::string& topic_name, const std::string& topic_value)
 {
-    if (topic_name == m_router_item.mqtt_topic)
+    if (topic_name == m_router_item.mqtt_topic && "unknown" != topic_value)
     {
-        //printDebug("CDigitalGtwItem/%s: I'm digital item[%i], and it's my topic !!!", __FUNCTION__, m_router_item.number);
+        //printDebug("CDigitalGtwItem/%s: I'm digital item[%i], msg:%s", __FUNCTION__, m_router_item.number, topic_value.c_str());
 
         for(Parsers::CGtwTableParser::router_item_t::mapp_item_t &map_item: m_router_item.mapping)
         {

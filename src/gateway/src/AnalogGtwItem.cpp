@@ -55,7 +55,7 @@ void CAnalogGtwItem::slotTopicUpdate(const std::string& topic_name, const std::s
 {
    if (topic_name == m_router_item.mqtt_topic)
    {
-      //printDebug("CDigitalGtwItem/%s: I'm analog item[%i], and it's my topic !!!", __FUNCTION__, m_router_item.number);
+      printDebug("CDigitalGtwItem/%s: I'm analog item[%i], and it's my topic !!!", __FUNCTION__, m_router_item.number);
 
       m_sig_analog_poit_set(m_router_item.number, topic_value);
    }
