@@ -27,7 +27,7 @@ CAnalogGtwItem::~CAnalogGtwItem()
 
 void CAnalogGtwItem::initItem(MqttGateway::CMqttGatewayImpl& gtw)
 {
-    m_conn_to_apoint_update = gtw.connToSigDigitalPointUpdate(boost::bind(&CAnalogGtwItem::slotAnalogPointUpdate, this,_1, _2, _3));
+    m_conn_to_apoint_update = gtw.connToSigAnalogPointUpdate(boost::bind(&CAnalogGtwItem::slotAnalogPointUpdate, this,_1, _2, _3));
     m_conn_to_topic_update  = gtw.connToSigTopicUpdate(boost::bind(&CAnalogGtwItem::slotTopicUpdate, this,_1, _2));
 
     if (true == m_router_item.topic_sub)
@@ -40,7 +40,7 @@ void CAnalogGtwItem::slotAnalogPointUpdate(uint32_t poit_num, uint8_t status, do
 {
    if (poit_num == m_router_item.number)
    {
-        printDebug("CAnalogGtwItem/%s: I'm analog item[%i], and it's mine !!!", __FUNCTION__, m_router_item.number);
+        //printDebug("CAnalogGtwItem/%s: I'm analog item[%i], and it's mine !!!", __FUNCTION__, m_router_item.number);
 
         std::string new_val("unknown");
         if (PointStatus::unknown != status)
@@ -55,7 +55,7 @@ void CAnalogGtwItem::slotTopicUpdate(const std::string& topic_name, const std::s
 {
    if (topic_name == m_router_item.mqtt_topic)
    {
-      printDebug("CDigitalGtwItem/%s: I'm analog item[%i], and it's my topic !!!", __FUNCTION__, m_router_item.number);
+      //printDebug("CDigitalGtwItem/%s: I'm analog item[%i], and it's my topic !!!", __FUNCTION__, m_router_item.number);
 
       m_sig_analog_poit_set(m_router_item.number, topic_value);
    }

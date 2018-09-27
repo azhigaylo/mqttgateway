@@ -46,8 +46,6 @@ void CMqttGatewayImpl::performStart()
         m_mqtt_client = std::make_shared<Mqtt::CMqttClientInterface>();
         m_mqtt_client->connToSigTopicUpdate(boost::bind(&CMqttGatewayImpl::slotTopicUpdate, this,_1, _2));
         m_mqtt_client->connSigMqttConnection(boost::bind(&CMqttGatewayImpl::slotMqttConnectionUpdate, this,_1));
-        m_mqtt_client->startMqttConnection(m_config->getBrokerIP(), m_config->getBrokerPort(),
-                                           m_config->getBrokerUserName(), m_config->getBrokerPwd());
 
         //---------------------start items <-> gateway------------
         // create gateway items
@@ -81,6 +79,10 @@ void CMqttGatewayImpl::performStart()
                 m_gtw_items.push_back(std::move(item_ptr.get()));
             }
         }
+
+        //---------------------start mqtt client----------------------------
+        m_mqtt_client->startMqttConnection(m_config->getBrokerIP(), m_config->getBrokerPort(),
+                                           m_config->getBrokerUserName(), m_config->getBrokerPwd());
     }
     catch (const std::exception& e)
     {
@@ -124,9 +126,9 @@ void CMqttGatewayImpl::slotDigitalPointUpdate(uint32_t start_poit_num, uint32_t 
 
         if (status && value)
         {
-            // brodcast to items
-            m_sig_digital_update(i, status.get(), value.get());
             printDebug("CMqttGatewayImpl/%s: dpoint[%i](status/value) = %d/%i", __FUNCTION__, i, status.get(), value.get());
+           // brodcast to items
+            m_sig_digital_update(i, status.get(), value.get());
         }
     }
 }
@@ -141,9 +143,9 @@ void CMqttGatewayImpl::slotAnalogPointUpdate(uint32_t start_poit_num, uint32_t n
 
         if (status && value)
         {
-           m_sig_analog_update(start_poit_num, status.get(), value.get());
+           printDebug("CMqttGatewayImpl/%s: apoint[%i](status/value) = %d/%f", __FUNCTION__, i, status.get(), value.get());
            // brodcast to items
-           printDebug("CMqttGatewayImpl/%s: apoint[%i](status/value) = %d/%lf", __FUNCTION__, i, status.get(), value.get());
+           m_sig_analog_update(i, status.get(), value.get());
         }
     }
 }
@@ -159,6 +161,8 @@ void CMqttGatewayImpl::slotDataConnectionUpdate(bool connection_status)
     {
         if (false == m_stop_flag)
         {
+            // stop connection to data server
+            m_data_client->stopDataConnection();
             // send start requests
             m_data_reconn_thread.reset(new boost::scoped_thread<>([this](){
                 if (true == m_mqtt_client->getConnectionState())

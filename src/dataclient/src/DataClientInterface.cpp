@@ -123,8 +123,6 @@ void CDataClientInterface::connectionHandler(const boost::system::error_code& er
 {
     if (boost::system::errc::success == error)
     {
-        updateConnectionState(true);
-
         printDebug("CDataClientInterface/%s: connected...", __FUNCTION__);
 
         // allocate new subbuffer & wait for response package
@@ -140,6 +138,7 @@ void CDataClientInterface::connectionHandler(const boost::system::error_code& er
                                                                  std::this_thread::sleep_for(std::chrono::milliseconds(10));
                                                                  sendGetApointsReq(0, m_a_point_amount);
                                                                  std::this_thread::sleep_for(std::chrono::milliseconds(10));}));
+        updateConnectionState(true);
     }
     else
     {
