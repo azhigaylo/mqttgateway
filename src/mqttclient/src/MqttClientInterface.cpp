@@ -56,14 +56,14 @@ void CMqttClientInterface::setTopic(const std::string& topic, const std::string&
 {
     printDebug("CMqttClientInterface/%s: send msg: '%s' to topic: %s ", __FUNCTION__, msg.c_str(), topic.c_str());
 
-    publish(NULL, topic.c_str(), static_cast<int>(msg.size()), static_cast<const void*>(msg.c_str()));
+    publish(NULL, topic.c_str(), static_cast<int>(msg.size()), static_cast<const void*>(msg.c_str()), 1, true);
 }
 
 void CMqttClientInterface::subscribeTopic(const std::string& topic)
 {
     printDebug("CMqttClientInterface/%s: subscribe on topic: %s", __FUNCTION__, topic.c_str());
 
-    subscribe(NULL, topic.c_str());
+    subscribe(NULL, topic.c_str(), 1);
 }
 
 
