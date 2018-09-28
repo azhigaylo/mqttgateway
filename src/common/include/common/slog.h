@@ -46,10 +46,16 @@ void deinitDlt();
 void printError(const char *fmt, ...);
 
 /**
- * print info
+ * print warning
  * @param *fmt format string
  */
 void printWarning(const char *fmt, ...);
+
+/**
+ * print info
+ * @param *fmt format string
+ */
+void printInfo(const char *fmt, ...);
 
 /**
  * print info

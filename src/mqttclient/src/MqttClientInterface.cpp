@@ -12,18 +12,18 @@ CMqttClientInterface::CMqttClientInterface()
     : mosquittopp("mqtt.client")
     , m_connection_state(false)
 {
-    printDebug("CMqttClientInterface/%s: created", __FUNCTION__);
+    printInfo("CMqttClientInterface/%s: created", __FUNCTION__);
 
 }
 
 CMqttClientInterface::~CMqttClientInterface()
 {
-    printDebug("CMqttClientInterface/%s  was deleted", __FUNCTION__);
+    printInfo("CMqttClientInterface/%s  was deleted", __FUNCTION__);
 }
 
 void CMqttClientInterface::startMqttConnection(const std::string& host, int server_port, const std::string& user, const std::string& pwd)
 {
-    printDebug("CMqttClientInterface/%s: starting...", __FUNCTION__);
+    printInfo("CMqttClientInterface/%s: starting...", __FUNCTION__);
 
     // start mosquitto internal loop
     mosqpp::lib_init();
@@ -38,18 +38,18 @@ void CMqttClientInterface::startMqttConnection(const std::string& host, int serv
     // connect to mqtt
     connect(host.c_str(), server_port, 120);
 
-    printDebug("CMqttClientInterface/%s: started", __FUNCTION__);
+    printInfo("CMqttClientInterface/%s: started", __FUNCTION__);
 }
 
 void CMqttClientInterface::stopMqttConnection()
 {
-    printDebug("CMqttClientInterface/%s: stopping...", __FUNCTION__);
+    printInfo("CMqttClientInterface/%s: stopping...", __FUNCTION__);
 
     // stop mosquitto internal loop
     loop_stop(true);
     mosqpp::lib_cleanup();
 
-    printDebug("CMqttClientInterface/%s: stopped", __FUNCTION__);
+    printInfo("CMqttClientInterface/%s: stopped", __FUNCTION__);
 }
 
 void CMqttClientInterface::setTopic(const std::string& topic, const std::string& msg)

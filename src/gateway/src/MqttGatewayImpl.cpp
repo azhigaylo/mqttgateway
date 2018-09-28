@@ -20,17 +20,17 @@ CMqttGatewayImpl::CMqttGatewayImpl(const std::shared_ptr<Parsers::CConfigParser>
     , m_stop_flag(false)
 {
 
-    printDebug("CMqttGatewayImpl/%s: created", __FUNCTION__);
+    printInfo("CMqttGatewayImpl/%s: created", __FUNCTION__);
 }
 
 CMqttGatewayImpl::~CMqttGatewayImpl()
 {
-    printDebug("CMqttGatewayImpl/%s: was deleted", __FUNCTION__);
+    printInfo("CMqttGatewayImpl/%s: was deleted", __FUNCTION__);
 }
 
 void CMqttGatewayImpl::performStart()
 {
-    printDebug("CMqttGatewayImpl/%s: starting...", __FUNCTION__);
+    printInfo("CMqttGatewayImpl/%s: starting...", __FUNCTION__);
 
     try
     {
@@ -90,12 +90,12 @@ void CMqttGatewayImpl::performStart()
         throw;
     }
 
-    printDebug("CMqttGatewayImpl/%s: started", __FUNCTION__);
+    printInfo("CMqttGatewayImpl/%s: started", __FUNCTION__);
 }
 
 void CMqttGatewayImpl::performStop()
 {
-    printDebug("CMqttGatewayImpl/%s: ->", __FUNCTION__);
+    printInfo("CMqttGatewayImpl/%s: ->", __FUNCTION__);
 
     m_stop_flag = true;
 
@@ -111,7 +111,7 @@ void CMqttGatewayImpl::performStop()
         m_mqtt_client.reset();
     }
 
-    printDebug("CMqttGatewayImpl/%s: <-", __FUNCTION__);
+    printInfo("CMqttGatewayImpl/%s: <-", __FUNCTION__);
 }
 
 //----------------------data client <-> gateway slots---------------------------------------------------------------------------------------
@@ -126,7 +126,7 @@ void CMqttGatewayImpl::slotDigitalPointUpdate(uint32_t start_poit_num, uint32_t 
 
         if (status && value)
         {
-            printDebug("CMqttGatewayImpl/%s: dpoint[%i](status/value) = %d/%i", __FUNCTION__, i, status.get(), value.get());
+            printInfo("gtw: -> dpoint[%i](status/value) = %d/%i", i, status.get(), value.get());
            // brodcast to items
             m_sig_digital_update(i, status.get(), value.get());
         }
@@ -143,7 +143,7 @@ void CMqttGatewayImpl::slotAnalogPointUpdate(uint32_t start_poit_num, uint32_t n
 
         if (status && value)
         {
-           printDebug("CMqttGatewayImpl/%s: apoint[%i](status/value) = %d/%f", __FUNCTION__, i, status.get(), value.get());
+           printInfo("gtw: -> apoint[%i](status/value) = %d/%f", i, status.get(), value.get());
            // brodcast to items
            m_sig_analog_update(i, status.get(), value.get());
         }
@@ -181,7 +181,7 @@ void CMqttGatewayImpl::slotDataConnectionUpdate(bool connection_status)
 // mqtt client <-> gateway
 void CMqttGatewayImpl::slotTopicUpdate(const std::string& topic_name, const std::string& topic_value)
 {
-    printDebug("CMqttGatewayImpl/%s: got topic %s update, msg: '%s'", __FUNCTION__, topic_name.c_str(), topic_value.c_str());
+    printInfo("gtw: -> topic[%s] = %s", topic_name.c_str(), topic_value.c_str());
     // brodcast to items
     m_sig_topic_update(topic_name, topic_value);
 }
@@ -234,21 +234,24 @@ void CMqttGatewayImpl::slotMqttConnectionUpdate(bool connection_status)
 // gtw item <-> gateway
 void CMqttGatewayImpl::slotTopicSubscribe(const std::string& topic_name)
 {
-    printDebug("CMqttGatewayImpl/%s: subscribe on topic[%s]", __FUNCTION__, topic_name.c_str());
+    printDebug("gtw: <- subscribe on topic[%s]", __FUNCTION__, topic_name.c_str());
+
     m_mqtt_client->subscribeTopic(topic_name);
 }
 
 // gtw item <-> gateway
 void CMqttGatewayImpl::slotTopicWrire(const std::string& topic_name, const std::string& topic_value)
 {
-    printDebug("CMqttGatewayImpl/%s: set topic[%s] = %s", __FUNCTION__, topic_name.c_str(), topic_value.c_str());
+    printInfo("gtw: <- topic[%s] = %s", topic_name.c_str(), topic_value.c_str());
+
     m_mqtt_client->setTopic(topic_name, topic_value);
 }
 
 // gtw item <-> gateway
 void CMqttGatewayImpl::slotDigitalPointSet(uint32_t poit_num, uint16_t point_value)
 {
-    printDebug("CMqttGatewayImpl/%s: set dpoint[%i] = %i", __FUNCTION__, poit_num, point_value);
+    printInfo("gtw: <- dpoint[%i] = %i", poit_num, point_value);
+
     m_data_client->setDPoint(poit_num, point_value);
 }
 
@@ -257,7 +260,7 @@ void CMqttGatewayImpl::slotAnalogPointSet(uint32_t poit_num, const std::string& 
 {
     try
     {
-        printDebug("CMqttGatewayImpl/%s: set apoint[%i] = %s", __FUNCTION__, poit_num, point_value.c_str());
+        printInfo("gtw: <- apoint[%i] = %s", poit_num, point_value.c_str());
         m_data_client->setAPoint(poit_num, std::stod(point_value));
     }
     catch (const std::exception& e)

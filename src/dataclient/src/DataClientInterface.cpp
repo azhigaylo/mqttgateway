@@ -25,7 +25,7 @@ CDataClientInterface::~CDataClientInterface()
 {
     m_io_service.stop();
     m_srv_thread->join();
-    printDebug("CDataClientInterface/%s: deleted.", __FUNCTION__);
+    printInfo("CDataClientInterface/%s: deleted.", __FUNCTION__);
 }
 
 void CDataClientInterface::startDataConnection(std::string host, int server_port)
@@ -36,7 +36,7 @@ void CDataClientInterface::startDataConnection(std::string host, int server_port
         server.address(boost::asio::ip::address::from_string(host));
         server.port(server_port);
 
-        printDebug("CDataClientInterface/%s: : try to connect to '%s:%i'", __FUNCTION__, host.c_str(), server_port);
+        printInfo("CDataClientInterface/%s: : try to connect to '%s:%i'", __FUNCTION__, host.c_str(), server_port);
 
         m_boost_socket->async_connect(server, boost::bind(&CDataClientInterface::connectionHandler, this, boost::asio::placeholders::error));
     }
@@ -123,7 +123,7 @@ void CDataClientInterface::connectionHandler(const boost::system::error_code& er
 {
     if (boost::system::errc::success == error)
     {
-        printDebug("CDataClientInterface/%s: connected...", __FUNCTION__);
+        printInfo("CDataClientInterface/%s: connected...", __FUNCTION__);
 
         // allocate new subbuffer & wait for response package
         m_raw_buf = m_read_buffer.prepare(sizeof(TResponse));
