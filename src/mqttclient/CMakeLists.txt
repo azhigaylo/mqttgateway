@@ -5,6 +5,7 @@ project(mqttclient LANGUAGES CXX)
 message("mqttclient...")
 
 find_package(Boost REQUIRED COMPONENTS thread system)
+find_package(mosquittopp REQUIRED)
 
 if(Boost_FOUND)
     message("Boost_FOUND..")
@@ -12,19 +13,12 @@ else()
     message(FATAL_ERROR "Boost NOT FOUND")
 endif()
 
-find_package(mosquittopp REQUIRED)
-
-if (mosquitto_FOUND)
-    message(STATUS "Mosquitto found")
-else()
-    message(FATAL_ERROR "Mosquitto package NOT found !!!")
-endif()
-
 add_library(${PROJECT_NAME} STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/src/MqttClientInterface.cpp
     )
 
 target_include_directories(${PROJECT_NAME}
+    PUBLIC ${mosquittopp_INCLUDE_DIR}
     PUBLIC  ${CMAKE_CURRENT_SOURCE_DIR}/include
     )
 
