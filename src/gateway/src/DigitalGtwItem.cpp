@@ -42,23 +42,34 @@ void CDigitalGtwItem::slotDigitalPointUpdate(uint32_t poit_num, uint8_t status, 
    {
         //printDebug("CDigitalGtwItem/%s: I'm digital item[%i], and it's mine !!!", __FUNCTION__, m_router_item.number);
 
-        std::string new_val("not_defined");
-        if (PointStatus::unknown != status)
+        std::string new_val;
+        switch (status)
         {
-            for(Parsers::CGtwTableParser::router_item_t::mapp_item_t &map_item: m_router_item.mapping)
+            case PointStatus::reliable :
             {
-                if (map_item.first == value)
+                for(Parsers::CGtwTableParser::router_item_t::mapp_item_t &map_item: m_router_item.mapping)
                 {
-                    new_val = map_item.second;
-                    break;
+                    if (map_item.first == value)
+                    {
+                        new_val = map_item.second;
+                        break;
+                    }
                 }
+                break;
+            }
+            case PointStatus::processing :
+            case PointStatus::processed :
+            {
+                break;
+            }
+            case PointStatus::unknown :
+            default :
+            {
+                new_val = "unknown";
             }
         }
-        else
-        {
-            new_val = "unknown";
-        }
-        m_sig_topic_write(m_router_item.mqtt_topic, new_val);
+
+        if (false == new_val.empty())m_sig_topic_write(m_router_item.mqtt_topic, new_val);
    }
 }
 

@@ -42,12 +42,25 @@ void CAnalogGtwItem::slotAnalogPointUpdate(uint32_t poit_num, uint8_t status, do
    {
         //printDebug("CAnalogGtwItem/%s: I'm analog item[%i], and it's mine !!!", __FUNCTION__, m_router_item.number);
 
-        std::string new_val("unknown");
-        if (PointStatus::unknown != status)
+        std::string new_val;
+        switch (status)
         {
-            new_val = std::to_string(value);
+            case PointStatus::unknown :
+            {
+                new_val = "unknown";
+                break;
+            }
+            case PointStatus::reliable :
+            {
+                new_val = std::to_string(value);
+                break;
+            }
+            case PointStatus::processing :
+            case PointStatus::processed :
+            default : break;
         }
-        m_sig_topic_write(m_router_item.mqtt_topic, new_val);
+
+        if (false == new_val.empty())m_sig_topic_write(m_router_item.mqtt_topic, new_val);
    }
 }
 

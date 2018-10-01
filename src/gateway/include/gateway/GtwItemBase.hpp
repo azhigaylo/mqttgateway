@@ -17,7 +17,9 @@ class IGtwItemBase
         enum PointStatus
         {
             unknown      = 0,
-            reliable     = 1
+            reliable     = 1,
+            processing   = 16,
+            processed    = 32
         };
 
         Parsers::CGtwTableParser::router_item_t m_router_item;

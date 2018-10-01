@@ -215,7 +215,7 @@ void CDataClientInterface::processIncoming()
                             {
                                DPOINT[package.header.start_point + i] = package.array.digital[i];
                             }
-                            }
+                         }
                          m_sig_digital_point_update(package.header.start_point, package.header.number_point);
                          break;
                       }
