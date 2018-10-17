@@ -261,7 +261,6 @@ void CDataClientInterface::processIncoming()
                           break;
                       }
                     }
-                    m_read_buffer.consume(package.header.data_size);
                 }
                 else break;
             }
