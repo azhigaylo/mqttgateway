@@ -6,7 +6,7 @@
         "data_password": ""
     },
     "MqttClientConfig": {
-        "mqtt_broker": "127.0.0.1",
+        "mqtt_broker": "192.168.0.104",
         "mqtt_broker_port": 8097,
         "mqtt_username": "test1",
         "mqtt_password": "123!@#"
