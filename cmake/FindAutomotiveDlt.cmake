@@ -10,16 +10,18 @@
 find_package(PkgConfig QUIET)
 
 if (PkgConfig_FOUND)
-    pkg_check_modules(_AUTOMOTIVE_DLT automotive-dlt QUIET)
+    pkg_check_modules(_AUTOMOTIVE_DLT automotive-dlt REQUIRED)
 
     find_path(AutomotiveDlt_INCLUDE_DIR
         dlt/dlt.h
         ${_AUTOMOTIVE_DLT_INCLUDEDIR}
+        NO_DEFAULT_PATH
         )
 
     find_library(AutomotiveDlt_LIBRARY
         NAMES dlt
         PATHS ${_AUTOMOTIVE_DLT_LIBRARY_DIRS}
+        NO_DEFAULT_PATH  
         )
 
     if (_AUTOMOTIVE_DLT_VERSION)

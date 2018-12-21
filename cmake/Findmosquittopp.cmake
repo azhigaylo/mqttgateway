@@ -5,7 +5,7 @@
 find_package(PkgConfig QUIET)
 
 if (PkgConfig_FOUND)
-    pkg_check_modules(_MOSQUITTO libmosquittopp QUIET)
+    pkg_check_modules(_MOSQUITTO libmosquittopp REQUIRED)
 
     find_path(mosquittopp_INCLUDE_DIR
         mosquittopp.h
