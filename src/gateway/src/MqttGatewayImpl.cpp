@@ -167,7 +167,7 @@ void CMqttGatewayImpl::slotDataConnectionUpdate(bool connection_status)
             m_data_reconn_thread.reset(new boost::scoped_thread<>([this](){
                 if (true == m_mqtt_client->getConnectionState())
                 {
-                    boost::this_thread::sleep(boost::posix_time::seconds(timeout::data_timeout_s));
+                    boost::this_thread::sleep(boost::posix_time::seconds(static_cast<uint16_t>(timeout::data_timeout_s)));
                     printDebug("CMqttGatewayImpl/slotDataConnectionUpdate: reconnection to data server...");
                     if (m_data_client)m_data_client->startDataConnection(m_config->getDataIP(), m_config->getDataPort());
                 }
@@ -220,7 +220,7 @@ void CMqttGatewayImpl::slotMqttConnectionUpdate(bool connection_status)
 
             // send start requests
             m_mqtt_reconn_thread.reset(new boost::scoped_thread<>([this](){
-                boost::this_thread::sleep(boost::posix_time::seconds(timeout::mqtt_timeout_s));
+                boost::this_thread::sleep(boost::posix_time::seconds(static_cast<uint16_t>(timeout::mqtt_timeout_s)));
                 printDebug("CMqttGatewayImpl/slotMqttConnectionUpdate: reconnection to mqtt broker...");
                 if (m_mqtt_client)m_mqtt_client->reconnectMqttConnection();
             }));
