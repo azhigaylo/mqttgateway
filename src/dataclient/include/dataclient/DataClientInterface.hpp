@@ -13,8 +13,8 @@ class CDataClientInterface final
 {
     enum
     {
-        d_point_total = 100,
-        a_point_total = 100
+        d_point_total = 1000,
+        a_point_total = 1000
     };
 
     enum
