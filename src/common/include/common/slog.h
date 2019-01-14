@@ -1,3 +1,10 @@
+/*
+ * Created by Anton Zhigaylo <antoooon@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the MIT License
+ */
+
 #ifndef _SLOG_H_
 #define _SLOG_H_
 
