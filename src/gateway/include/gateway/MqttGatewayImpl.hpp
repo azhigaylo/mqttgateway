@@ -1,3 +1,10 @@
+/*
+ * Created by Anton Zhigaylo <antoooon@gmail.com>
+ *
+ * This program is free software; you can redistribute it and/or
+ * modify it under the terms of the MIT License
+ */
+
 #pragma once
 
 #include <map>
@@ -56,8 +63,9 @@ class CMqttGatewayImpl final
         void slotMqttConnectionUpdate(bool connection_status);
 
     private:
-
-        enum timeout{mqtt_timeout_s = 5, data_timeout_s = 5};
+        //const uint16_t mqtt_timeout_s = 5;
+        //const uint16_t data_timeout_s = 5;
+        enum class timeout{mqtt_timeout_s = 5, data_timeout_s = 5};
 
         std::shared_ptr<Parsers::CConfigParser>    m_config;
         std::shared_ptr<Parsers::CGtwTableParser>  m_gtw_table;
