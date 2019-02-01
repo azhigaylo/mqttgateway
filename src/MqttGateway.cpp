@@ -105,6 +105,16 @@ int main(int argc, const char** argv)
         setDbgSink(debug_sink);
     }
 
+    if (TRACE_SINK_DLT == getDbgSink())
+    {
+        initDlt();
+        printDebug("MqttGateway/%s: Dlt inited...", __FUNCTION__);
+    }
+
+    printDebug("MqttGateway/%s: debug level = %i", __FUNCTION__, debug_level);
+    printDebug("MqttGateway/%s: debug sink = %i", __FUNCTION__, debug_sink);
+    printDebug("MqttGateway/%s: started with cfg = %s", __FUNCTION__, config_file.string().c_str());
+
     printDebug("MqttGateway/%s: HomeBrain core <-> MQTT Gateway Starting...", __FUNCTION__);
 
     try
@@ -129,11 +139,22 @@ int main(int argc, const char** argv)
         core_gateway->performStop();
 
         printDebug("MqttGateway/%s: HomeBrain core <-> MQTT Gateway Stopped...", __FUNCTION__);
+
+        if (TRACE_SINK_DLT == getDbgSink())
+        {
+            deinitDlt();
+            printDebug("MqttGateway/%s: Dlt deinited...", __FUNCTION__);
+        }
     }
     catch (const std::exception& e)
     {
         printDebug("MqttGateway/%s: Error description: %s", __FUNCTION__, e.what());
         printDebug("MqttGateway/%s: Gateway is closings", __FUNCTION__);
+        if (TRACE_SINK_DLT == getDbgSink())
+        {
+            deinitDlt();
+            printDebug("MqttGateway/%s: Dlt deinited...", __FUNCTION__);
+        }
         return 1;
     }
 

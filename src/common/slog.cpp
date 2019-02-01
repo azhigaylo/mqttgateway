@@ -106,8 +106,8 @@ int getDbgSink()
 
 void initDlt()
 {
-   DLT_REGISTER_APP("HB","HomeBrain trace");
-   DLT_REGISTER_CONTEXT(dlt_context,"HB_CTX","Main context");
+   DLT_REGISTER_APP("GTW","Mqtt gateway trace");
+   DLT_REGISTER_CONTEXT(dlt_context,"GTW","gateway app");
 
    usleep(10000);
 }
