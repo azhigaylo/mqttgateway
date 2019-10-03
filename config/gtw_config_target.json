@@ -1,12 +1,12 @@
 {
     "DataClientConfig": {
-        "data_ip": "192.168.0.10",
+        "data_ip": "192.168.88.10",
         "data_port": 8096,
         "data_username": "",
         "data_password": ""
     },
     "MqttClientConfig": {
-        "mqtt_broker": "192.168.0.10",
+        "mqtt_broker": "192.168.88.10",
         "mqtt_broker_port": 8097,
         "mqtt_username": "test1",
         "mqtt_password": "123!@#"
